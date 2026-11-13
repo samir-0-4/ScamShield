@@ -205,15 +205,25 @@ export const AnalysisResultsPage = () => {
     [data]
   );
 
-  const summary = useMemo(
-    () =>
-      (data?.details || [])
-        .map(({ analysis }) => analysis)
-        .flat()
-        .map((execution) => safeJson(execution.outputJson))
-        .find((output) => output?.agentName === 'INVESTIGATION_REPORT' && output.summary)?.summary,
-    [data]
-  );
+  const summary = useMemo(() => {
+    const outputs = (data?.details || [])
+      .flatMap(({ analysis }) => analysis)
+      .map((execution) => safeJson(execution.outputJson))
+      .filter(Boolean);
+
+    // Prefer dedicated investigation report summary if present
+    const reportSummary = outputs.find(
+      (output) => output?.agentName === 'INVESTIGATION_REPORT' && output.summary
+    )?.summary;
+    if (reportSummary) return reportSummary;
+
+    // Fallback to any detective agent structured summary (Text, URL, Email, File)
+    const agentSummary = outputs.find((output) => output?.summary)?.summary;
+    if (agentSummary) return agentSummary;
+
+    // Fallback to heuristic risk assessment explanation
+    return data?.risk?.explanation || null;
+  }, [data]);
 
   const actions = useMemo(() => {
     const text = findings
@@ -402,7 +412,7 @@ export const AnalysisResultsPage = () => {
             title="No findings returned"
             message={
               failed.length
-                ? 'Analysis failed for one or more agents.'
+                ? `Analysis failed: ${failed[0]?.errorMessage || 'External AI provider credentials unconfigured or timed out.'}`
                 : 'No structured findings are available yet.'
             }
           />
