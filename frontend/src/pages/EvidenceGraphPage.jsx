@@ -5,6 +5,8 @@ import {
   ChevronRight,
   GitBranch,
   Info,
+  Maximize2,
+  Network,
   ShieldCheck,
   X,
   AlertCircle,
@@ -17,6 +19,7 @@ import {
   ReactFlowProvider,
   useEdgesState,
   useNodesState,
+  useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import Card from '../components/common/Card';
@@ -81,7 +84,7 @@ const DetailPanel = ({ selected, onClose, findings }) => {
     <aside className="absolute right-4 top-4 z-dropdown w-[min(380px,calc(100%-2rem))] rounded-2xl border border-white/[0.12] bg-[#0c101c]/95 p-5 sm:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.1)] backdrop-blur-2xl min-w-0 transition-all duration-150">
       <div className="flex items-start justify-between gap-3 pb-3.5 border-b border-white/[0.08]">
         <div className="min-w-0 flex-1">
-          <p className="text-2xs font-mono font-bold uppercase tracking-wider text-blue-400">
+          <p className="text-2xs font-mono font-bold uppercase tracking-wider text-cyan-400">
             {isEdge ? 'Relationship Provenance' : titleCase(item.type)}
           </p>
           <h2 className="mt-1 break-words font-mono text-sm font-bold text-slate-100">
@@ -170,8 +173,9 @@ const DetailPanel = ({ selected, onClose, findings }) => {
   );
 };
 
-export const EvidenceGraphPage = () => {
+const EvidenceGraphContent = () => {
   const { id } = useParams();
+  const { fitView } = useReactFlow();
   const [graph, setGraph] = useState(null);
   const [investigation, setInvestigation] = useState(null);
   const [selected, setSelected] = useState(null);
@@ -250,7 +254,7 @@ export const EvidenceGraphPage = () => {
             <ArrowLeft className="h-3.5 w-3.5" /> Back to investigation
           </Link>
           <h1 className="flex items-center gap-3 text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            <div className="p-2 rounded-xl bg-blue-500/15 border border-blue-400/30 text-blue-400 shadow-[0_0_16px_rgba(59,130,246,0.25)]">
+            <div className="p-2 rounded-xl bg-cyan-500/15 border border-cyan-400/30 text-cyan-400 shadow-[0_0_16px_rgba(59,130,246,0.25)]">
               <GitBranch className="h-6 w-6" />
             </div>
             <span>Evidence relationship graph</span>
@@ -260,9 +264,29 @@ export const EvidenceGraphPage = () => {
             · Real extracted relationships and entity links
           </p>
         </div>
-        <div className="flex items-center gap-2.5 text-xs font-mono text-slate-300 bg-[#0c101c] px-4 py-2 rounded-xl border border-white/[0.1] shadow-sm">
-          <ShieldCheck className="h-4 w-4 text-emerald-400" />
-          <span className="font-semibold">{graph?.edges?.length || 0} relationships</span>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            to={`/investigations/${id}/campaign`}
+            className="flex items-center gap-1.5 rounded-xl border border-cyan-500/30 bg-[#0c101c] px-3.5 py-2 text-2xs font-mono font-semibold text-cyan-300 hover:border-cyan-400 hover:bg-cyan-950/30 transition-colors shadow-sm"
+          >
+            <Network className="h-3.5 w-3.5 text-cyan-400" />
+            Campaign Signals
+          </Link>
+          <div className="flex items-center gap-2.5 text-xs font-mono text-slate-300 bg-[#0c101c] px-4 py-2 rounded-xl border border-white/[0.1] shadow-sm">
+            <ShieldCheck className="h-4 w-4 text-emerald-400" />
+            <span className="font-semibold">{graph?.edges?.length || 0} relationships</span>
+          </div>
+          {hasGraphData && (
+            <button
+              type="button"
+              onClick={() => fitView({ padding: 0.2, duration: 400 })}
+              title="Fit to view"
+              className="flex items-center gap-1.5 rounded-xl border border-white/[0.1] bg-[#0c101c] px-3.5 py-2 text-2xs font-mono font-semibold text-slate-300 hover:border-cyan-500/40 hover:text-cyan-300 transition-colors shadow-sm"
+            >
+              <Maximize2 className="h-3.5 w-3.5" />
+              Fit view
+            </button>
+          )}
         </div>
       </div>
 
@@ -312,7 +336,7 @@ export const EvidenceGraphPage = () => {
             />
             {!selected && (
               <div className="pointer-events-none absolute bottom-4 right-4 hidden items-center gap-2 rounded-xl border border-white/[0.08] bg-[#0c101c]/90 px-3.5 py-2 text-2xs font-mono text-slate-400 sm:flex backdrop-blur-md shadow-lg">
-                <Info className="h-3.5 w-3.5 text-blue-400" /> Select a node or relationship to
+                <Info className="h-3.5 w-3.5 text-cyan-400" /> Select a node or relationship to
                 inspect provenance
               </div>
             )}
@@ -330,10 +354,12 @@ export const EvidenceGraphPage = () => {
   );
 };
 
-export default function EvidenceGraphPageWithProvider() {
+export const EvidenceGraphPage = (props) => {
   return (
     <ReactFlowProvider>
-      <EvidenceGraphPage />
+      <EvidenceGraphContent {...props} />
     </ReactFlowProvider>
   );
-}
+};
+
+export default EvidenceGraphPage;

@@ -18,10 +18,10 @@ export const DashboardLayout = () => {
   }, [mobileOpen]);
 
   return (
-    <div className="min-h-dvh bg-[#05070c] text-slate-100 flex flex-col antialiased selection:bg-blue-500/30 selection:text-white relative bg-cyber-grid">
+    <div className="min-h-dvh bg-[#05070c] text-slate-100 flex flex-col antialiased selection:bg-cyan-500/30 selection:text-white relative bg-cyber-grid">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 z-modal px-4 py-2 bg-blue-600 text-white font-medium rounded-xl shadow-lg focus:outline-none"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 z-modal px-4 py-2 bg-cyan-400 text-slate-950 font-semibold rounded-xl shadow-lg focus:outline-none"
       >
         Skip to main content
       </a>
@@ -54,7 +54,7 @@ export const DashboardLayout = () => {
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
-              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
               aria-label="Close navigation"
             >
               <X className="w-5 h-5" />
@@ -69,7 +69,7 @@ export const DashboardLayout = () => {
         <main
           id="main-content"
           tabIndex={-1}
-          className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 min-w-0 flex-1 focus:outline-none"
+          className="w-full max-w-[92rem] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 min-w-0 flex-1 focus:outline-none"
         >
           <Outlet />
         </main>

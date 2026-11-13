@@ -10,7 +10,7 @@ export const EmptyState = ({
   <div className={cn('text-center py-12 px-4 sm:px-6 space-y-4 min-w-0', className)}>
     {Icon && (
       <div className="relative mx-auto w-14 h-14 rounded-2xl bg-[#111728] border border-white/[0.1] flex items-center justify-center text-slate-300 shadow-[0_4px_20px_rgba(0,0,0,0.5),inset_0_1px_0_0_rgba(255,255,255,0.1)]">
-        <Icon className="w-6 h-6 text-blue-400" />
+        <Icon className="w-6 h-6 text-cyan-300" aria-hidden="true" />
       </div>
     )}
     <div className="space-y-1.5 max-w-sm mx-auto">

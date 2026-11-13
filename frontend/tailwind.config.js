@@ -7,6 +7,28 @@ export default {
   theme: {
     extend: {
       colors: {
+        // PhantomTrace Design System Tokens
+        obsidian: {
+          DEFAULT: '#0C0E14',
+          800: '#111318',
+          700: '#161920',
+        },
+        surface: {
+          DEFAULT: '#1A1D26',
+          hover: '#1F232E',
+        },
+        'border-subtle': 'rgba(255,255,255,0.07)',
+        'cyan-primary': '#00C9C8',
+        'cyan-muted': '#00A8A7',
+        violet: '#7C3AED',
+        'risk-critical': '#EF4444',
+        'risk-high': '#F97316',
+        'risk-medium': '#EAB308',
+        'risk-low': '#22C55E',
+        'text-primary': '#F1F5F9',
+        'text-secondary': '#94A3B8',
+        'text-muted': '#64748B',
+        //
         // Obsidian & deep slate neutral ramps
         navy: {
           50: '#f8fafc',

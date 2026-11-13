@@ -20,7 +20,7 @@ export const Pagination = ({ page, pageSize, totalElements, totalPages, onPageCh
       <span className="text-xs text-slate-400 font-mono">
         Showing <span className="text-slate-100 font-semibold">{from}</span>–
         <span className="text-slate-100 font-semibold">{to}</span> of{' '}
-        <span className="text-blue-400 font-semibold">{totalElements}</span> cases
+        <span className="text-cyan-400 font-semibold">{totalElements}</span> cases
       </span>
       <div className="flex items-center gap-2">
         <button
@@ -30,7 +30,7 @@ export const Pagination = ({ page, pageSize, totalElements, totalPages, onPageCh
           className={cn(
             'inline-flex items-center justify-center w-8 h-8 rounded-xl border border-white/[0.08] bg-[#0c101c] text-slate-300',
             'hover:bg-[#151c2e] hover:text-white hover:border-white/[0.18] transition-all duration-150',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-35 disabled:pointer-events-none'
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 disabled:opacity-35 disabled:pointer-events-none'
           )}
           aria-label="Previous page"
         >
@@ -46,7 +46,7 @@ export const Pagination = ({ page, pageSize, totalElements, totalPages, onPageCh
           className={cn(
             'inline-flex items-center justify-center w-8 h-8 rounded-xl border border-white/[0.08] bg-[#0c101c] text-slate-300',
             'hover:bg-[#151c2e] hover:text-white hover:border-white/[0.18] transition-all duration-150',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-35 disabled:pointer-events-none'
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 disabled:opacity-35 disabled:pointer-events-none'
           )}
           aria-label="Next page"
         >

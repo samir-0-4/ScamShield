@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "api-contract-validation-on-stop",
+      "description": "Validate backend API source and frontend service routes together.",
+      "trigger": "Stop",
+      "action": {
+        "type": "command",
+        "command": "bash scripts/validate-api-contract.sh"
+      },
+      "timeout": 60
+    }
+  ]
+}

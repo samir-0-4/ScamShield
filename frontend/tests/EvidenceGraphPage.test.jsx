@@ -9,6 +9,7 @@ vi.mock('@xyflow/react', async () => {
     Background: () => null,
     Controls: () => null,
     MiniMap: () => null,
+    useReactFlow: () => ({ fitView: vi.fn() }),
     ReactFlowProvider: ({ children }) => children,
     ReactFlow: ({ nodes, edges, onNodeClick, onEdgeClick }) => (
       <div data-testid="relationship-graph">

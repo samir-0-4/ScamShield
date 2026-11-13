@@ -23,7 +23,7 @@ const VARIANTS = {
   DRAFT: 'bg-slate-800/80 text-slate-300 border-slate-700/80',
   FAILED: 'bg-rose-500/15 text-rose-300 border-rose-500/35 shadow-[0_0_12px_rgba(244,63,94,0.25)]',
 
-  ACCENT: 'bg-blue-500/15 text-blue-300 border-blue-500/35 shadow-[0_0_12px_rgba(59,130,246,0.2)]',
+  ACCENT: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/35 shadow-[0_0_12px_rgba(59,130,246,0.2)]',
   DEFAULT: 'bg-[#111728] text-slate-300 border-white/[0.1]',
 };
 

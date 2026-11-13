@@ -69,7 +69,7 @@ export const ReportsPage = () => {
                 className="flex items-center justify-between gap-4 p-5 hover:bg-white/[0.04] transition-all duration-150 group"
               >
                 <div className="min-w-0 flex-1 space-y-1">
-                  <h2 className="font-semibold text-slate-100 text-sm sm:text-base group-hover:text-blue-300 transition-colors truncate">
+                  <h2 className="font-semibold text-slate-100 text-sm sm:text-base group-hover:text-cyan-300 transition-colors truncate">
                     {investigation.title}
                   </h2>
                   <p className="text-xs text-slate-400 font-mono">
@@ -77,7 +77,7 @@ export const ReportsPage = () => {
                     {investigation.evidenceCount || 0} evidence items
                   </p>
                 </div>
-                <div className="flex items-center gap-2 text-xs font-semibold text-blue-400 group-hover:text-blue-300 shrink-0 font-mono">
+                <div className="flex items-center gap-2 text-xs font-semibold text-cyan-400 group-hover:text-cyan-300 shrink-0 font-mono">
                   <span>View report</span>
                   <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -87,8 +87,8 @@ export const ReportsPage = () => {
         </div>
       )}
 
-      <div className="flex items-start gap-3.5 rounded-2xl border border-blue-500/25 bg-blue-500/10 p-4.5 text-slate-300 shadow-sm">
-        <Info className="mt-0.5 h-4 w-4 shrink-0 text-blue-400" />
+      <div className="flex items-start gap-3.5 rounded-2xl border border-cyan-500/25 bg-cyan-500/10 p-4.5 text-slate-300 shadow-sm">
+        <Info className="mt-0.5 h-4 w-4 shrink-0 text-cyan-400" />
         <p className="text-xs leading-relaxed">
           Reports preserve unknown and unavailable information explicitly according to the
           PhantomTrace Epistemic Standard. Use the report page&apos;s Print / Save PDF action for browser-based export.

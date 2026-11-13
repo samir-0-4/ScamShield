@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, FileText, Printer, AlertCircle } from 'lucide-react';
+import { ArrowLeft, FileText, Printer, AlertCircle, Fingerprint, Network } from 'lucide-react';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
 import Badge from '../components/common/Badge';
@@ -35,7 +35,7 @@ const ReportFinding = ({ finding }) => (
       {finding.explanation || 'No explanation available.'}
     </p>
     {finding.recommendedAction && (
-      <p className="text-2xs text-blue-300 font-semibold bg-blue-500/10 p-2 rounded-lg border border-blue-500/20">
+      <p className="text-2xs text-cyan-300 font-semibold bg-cyan-500/10 p-2 rounded-lg border border-cyan-500/20">
         Action: {finding.recommendedAction}
       </p>
     )}
@@ -45,13 +45,20 @@ const ReportFinding = ({ finding }) => (
 export const InvestigationReportPage = () => {
   const { id } = useParams();
   const [report, setReport] = useState(null);
+  const [campaign, setCampaign] = useState(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState('');
 
   const load = useCallback(async () => {
-    const reports = await investigationService.listReports(id);
+    const [reports, campaignData] = await Promise.all([
+      investigationService.listReports(id),
+      typeof investigationService.getCampaign === 'function'
+        ? investigationService.getCampaign(id).catch(() => null)
+        : Promise.resolve(null),
+    ]);
     setReport(reports[0] || null);
+    setCampaign(campaignData);
   }, [id]);
 
   useEffect(() => {
@@ -85,6 +92,9 @@ export const InvestigationReportPage = () => {
     .flatMap((item) => (item.analysis || []).map((execution) => parse(execution.outputJson)))
     .filter((item) => item?.summary);
   const relationships = content?.relationships || [];
+  const campaignReconstruction = campaign || content?.campaignReconstruction;
+  const sharedIndicators = campaignReconstruction?.sharedIndicators || [];
+  const campaignSignals = campaignReconstruction?.campaignSignals || [];
 
   return (
     <div className="report-page mx-auto max-w-5xl space-y-6 min-w-0">
@@ -151,7 +161,7 @@ export const InvestigationReportPage = () => {
       ) : (
         <article className="space-y-6 print:bg-white print:text-black">
           <header className="report-card border-b border-white/[0.08] pb-6 print:border-slate-300">
-            <p className="text-2xs font-mono font-bold uppercase tracking-[0.2em] text-blue-400 print:text-slate-600">
+            <p className="text-2xs font-mono font-bold uppercase tracking-[0.2em] text-cyan-400 print:text-slate-600">
               PhantomTrace Digital Forensics Dossier
             </p>
             <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold text-white print:text-black tracking-tight">
@@ -285,6 +295,82 @@ export const InvestigationReportPage = () => {
               </p>
             )}
           </Card>
+
+          <Card
+            title="Campaign reconstruction"
+            subtitle="Cross-evidence provenance signals from the investigation engine"
+            className="shadow-card"
+            headerAction={
+              <Badge status={campaignReconstruction ? 'COMPLETED' : 'UNKNOWN'}>
+                {campaignReconstruction ? 'LIVE ANALYSIS' : 'UNAVAILABLE'}
+              </Badge>
+            }
+          >
+            {campaignReconstruction ? (
+              <div className="space-y-5">
+                {campaignSignals.length > 0 && (
+                  <div className="space-y-2.5">
+                    <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-cyan-300">
+                      <Network className="h-4 w-4" aria-hidden="true" />
+                      Campaign signals
+                    </h3>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      {campaignSignals.map((signal, index) => (
+                        <div
+                          key={`${signal.description || 'signal'}-${index}`}
+                          className="report-card rounded-2xl border border-cyan-500/20 bg-cyan-500/[0.06] p-4 space-y-2"
+                        >
+                          <p className="text-xs leading-relaxed text-slate-200">
+                            {signal.description || 'Unspecified coordination signal.'}
+                          </p>
+                          <p className="text-2xs font-mono text-cyan-300">
+                            Confidence: {titleCase(signal.confidence || 'UNKNOWN')} ·
+                            Supporting evidence: {signal.supportingEvidenceIds?.length || 0}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {sharedIndicators.length > 0 && (
+                  <div className="space-y-2.5">
+                    <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-violet-300">
+                      <Fingerprint className="h-4 w-4" aria-hidden="true" />
+                      Shared indicators
+                    </h3>
+                    <div className="grid gap-2 md:grid-cols-2">
+                      {sharedIndicators.map((indicator, index) => (
+                        <div
+                          key={`${indicator.type || 'indicator'}-${indicator.value || index}`}
+                          className="rounded-xl border border-white/[0.08] bg-[#090e1a] p-3"
+                        >
+                          <p className="break-all text-xs font-mono text-slate-200">
+                            {indicator.value || 'Unknown value'}
+                          </p>
+                          <p className="mt-1 text-2xs font-mono text-slate-400">
+                            {titleCase(indicator.type || 'UNKNOWN')} · seen in {indicator.count || 0} evidence items
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {!campaignSignals.length && !sharedIndicators.length && (
+                  <p className="text-xs text-slate-400">
+                    No cross-evidence campaign signals were detected.
+                  </p>
+                )}
+              </div>
+            ) : (
+              <p className="text-xs text-slate-400">
+                Campaign reconstruction is unavailable for this investigation.
+              </p>
+            )}
+          </Card>
+
+          <footer className="report-card rounded-2xl border border-amber-900/40 bg-amber-950/20 p-4 text-2xs text-amber-300 font-mono leading-relaxed print:border-slate-300 print:bg-white print:text-slate-600">
+            ⚠️ <strong>Disclaimer:</strong> This report is AI-assisted analysis generated by PhantomTrace. It is <strong>not a certified legal forensic report</strong> and should not be used as sole evidence in legal proceedings. All AI-generated findings are labelled <strong>AI_INFERENCE</strong> and reflect probabilistic assessments only. Consult a qualified digital forensics professional for legally admissible investigations.
+          </footer>
         </article>
       )}
     </div>

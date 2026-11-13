@@ -17,14 +17,14 @@ export const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link
           to="/"
-          className="flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl p-1 group"
+          className="flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 rounded-xl p-1 group"
         >
-          <div className="p-2 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-400/30 rounded-xl text-blue-400 group-hover:border-blue-400/60 group-hover:shadow-[0_0_16px_rgba(59,130,246,0.35)] transition-all shadow-sm">
+          <div className="p-2 bg-gradient-to-br from-cyan-500/20 to-violet-500/20 border border-cyan-400/30 rounded-xl text-cyan-400 group-hover:border-cyan-400/60 group-hover:shadow-[0_0_16px_rgba(59,130,246,0.35)] transition-all shadow-sm">
             <ShieldCheck className="w-5 h-5 shrink-0 transform-gpu translate-y-[0.5px]" aria-hidden="true" />
           </div>
           <div>
             <span className="font-extrabold text-base tracking-tight text-white group-hover:text-slate-100 transition-colors">
-              Phantom<span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">Trace</span>
+              Phantom<span className="bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">Trace</span>
             </span>
             <span className="block text-[9px] uppercase tracking-widest text-slate-400 font-mono font-semibold">
               Threat Forensics
@@ -39,7 +39,7 @@ export const Navbar = () => {
                 to="/dashboard"
                 className="inline-flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-white px-3.5 py-2 rounded-xl hover:bg-white/[0.06] transition-colors"
               >
-                <Compass className="w-4 h-4 text-blue-400 shrink-0 transform-gpu translate-y-[0.5px]" aria-hidden="true" />
+                <Compass className="w-4 h-4 text-cyan-400 shrink-0 transform-gpu translate-y-[0.5px]" aria-hidden="true" />
                 <span className="hidden sm:inline">Dashboard</span>
               </Link>
               <Link to="/investigations/new">

@@ -1,7 +1,7 @@
 import { cn } from '../../utils/cn';
 
 const ACCENTS = {
-  accent: 'text-blue-400 bg-blue-500/10 border-blue-500/30 shadow-[0_0_14px_rgba(59,130,246,0.25)]',
+  accent: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30 shadow-[0_0_14px_rgba(59,130,246,0.25)]',
   emerald: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30 shadow-[0_0_14px_rgba(16,185,129,0.25)]',
   amber: 'text-amber-400 bg-amber-500/10 border-amber-500/30 shadow-[0_0_14px_rgba(245,158,11,0.25)]',
   rose: 'text-rose-400 bg-rose-500/10 border-rose-500/30 shadow-[0_0_14px_rgba(244,63,94,0.25)]',

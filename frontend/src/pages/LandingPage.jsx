@@ -24,7 +24,7 @@ const SectionHeading = ({ eyebrow, title, description, align = "center" }) => (
         : "max-w-xl items-start text-left",
     ].join(" ")}
   >
-    <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-blue-300">
+    <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-300">
       {eyebrow}
     </span>
     <h2 className="text-2xl font-extrabold tracking-[-0.02em] text-white sm:text-3xl lg:text-4xl">
@@ -118,8 +118,8 @@ export const LandingPage = () => {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
       >
-        <div className="absolute -top-40 left-1/2 h-[520px] w-[860px] -translate-x-1/2 rounded-full bg-blue-600/20 blur-[140px]" />
-        <div className="absolute top-[38%] -right-32 h-[420px] w-[420px] rounded-full bg-indigo-600/15 blur-[140px]" />
+        <div className="absolute -top-40 left-1/2 h-[520px] w-[860px] -translate-x-1/2 rounded-full bg-cyan-600/20 blur-[140px]" />
+        <div className="absolute top-[38%] -right-32 h-[420px] w-[420px] rounded-full bg-violet-600/15 blur-[140px]" />
         <div className="absolute bottom-[8%] -left-40 h-[380px] w-[560px] rounded-full bg-cyan-500/10 blur-[140px]" />
       </div>
 
@@ -133,11 +133,12 @@ export const LandingPage = () => {
               </span>
 
               <h1 className="hero-enter-headline text-4xl font-extrabold leading-[1.05] tracking-[-0.03em] text-white sm:text-5xl lg:text-6xl">
-                Not sure if it&apos;s a scam?{" "}
-                <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-300 bg-clip-text text-transparent">
-                  Investigate before you trust.
-                </span>
+                Phantom<span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-300 bg-clip-text text-transparent">Trace</span>
               </h1>
+              <p className="mt-3 text-lg font-medium text-slate-300 sm:text-xl">
+                AI-powered digital threat forensics — not sure if it&apos;s a scam?{" "}
+                <span className="text-cyan-400 font-semibold">Investigate before you trust.</span>
+              </p>
             </div>
 
             <p className="hero-enter-subline max-w-[58ch] text-base leading-relaxed text-slate-400 sm:text-lg">
@@ -172,18 +173,18 @@ export const LandingPage = () => {
             <div className="grid max-w-lg grid-cols-3 divide-x divide-white/[0.07] overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.02] backdrop-blur">
               <div className="px-4 py-4">
                 <p className="font-mono text-xl font-bold text-white sm:text-2xl">
-                  100%
+                  Open
                 </p>
                 <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-slate-500">
-                  Sandboxed Storage
+                  Source Principles
                 </p>
               </div>
               <div className="px-4 py-4">
-                <p className="font-mono text-xl font-bold text-blue-400 sm:text-2xl">
+                <p className="font-mono text-xl font-bold text-cyan-400 sm:text-2xl">
                   Zero
                 </p>
                 <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-slate-500">
-                  Plaintext Secret
+                  Plaintext Secrets
                 </p>
               </div>
               <div className="px-4 py-4">
@@ -201,7 +202,7 @@ export const LandingPage = () => {
             <div className="relative">
               <div
                 aria-hidden="true"
-                className="absolute -inset-4 rounded-[36px] bg-gradient-to-br from-blue-500/25 via-indigo-500/10 to-transparent blur-2xl"
+                className="absolute -inset-4 rounded-[36px] bg-gradient-to-br from-cyan-500/25 via-violet-500/10 to-transparent blur-2xl"
               />
 
               <div className="relative rounded-[28px] border border-white/[0.09] bg-white/[0.045] p-1.5 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.95)] backdrop-blur-xl">
@@ -224,7 +225,7 @@ export const LandingPage = () => {
                       <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">
                         Ingested Evidence
                       </span>
-                      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-blue-400">
+                      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-cyan-400">
                         SMS Payload
                       </span>
                     </div>
@@ -331,7 +332,7 @@ export const LandingPage = () => {
           ].map(({ step, icon: Icon, title, description }) => (
             <Card key={step}>
               <div className="flex items-start justify-between">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-blue-400/25 bg-blue-500/10 text-blue-300 shadow-[0_0_24px_-6px_rgba(59,130,246,0.7)] transition-transform duration-300 group-hover:scale-105">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-cyan-400/25 bg-cyan-500/10 text-cyan-300 shadow-[0_0_24px_-6px_rgba(59,130,246,0.7)] transition-transform duration-300 group-hover:scale-105">
                   <Icon className="h-5 w-5" />
                 </div>
                 <span className="font-mono text-3xl font-bold leading-none text-white/[0.07] transition-colors duration-300 group-hover:text-white/[0.14]">
@@ -339,7 +340,7 @@ export const LandingPage = () => {
                 </span>
               </div>
 
-              <h3 className="mt-5 text-base font-semibold text-slate-100 transition-colors group-hover:text-blue-300">
+              <h3 className="mt-5 text-base font-semibold text-slate-100 transition-colors group-hover:text-cyan-300">
                 {title}
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-slate-400">
@@ -363,10 +364,10 @@ export const LandingPage = () => {
         <div className="mt-10 grid grid-cols-1 gap-5 sm:mt-12 md:grid-cols-2 lg:gap-6">
           <Card>
             <div className="flex items-start justify-between">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-blue-500/30 bg-blue-500/12 text-blue-400 shadow-[0_0_24px_-6px_rgba(59,130,246,0.8)] transition-transform duration-300 group-hover:scale-105">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-500/30 bg-cyan-500/12 text-cyan-400 shadow-[0_0_24px_-6px_rgba(59,130,246,0.8)] transition-transform duration-300 group-hover:scale-105">
                 <Database className="h-5 w-5" />
               </div>
-              <ArrowUpRight className="h-4 w-4 text-slate-600 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-blue-400" />
+              <ArrowUpRight className="h-4 w-4 text-slate-600 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-cyan-400" />
             </div>
 
             <h3 className="mt-5 text-lg font-bold tracking-tight text-white">
@@ -456,7 +457,7 @@ export const LandingPage = () => {
             </Card>
 
             <Card>
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-blue-500/30 bg-blue-500/12 text-blue-400 shadow-[0_0_24px_-6px_rgba(59,130,246,0.8)] transition-transform duration-300 group-hover:scale-105">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-500/30 bg-cyan-500/12 text-cyan-400 shadow-[0_0_24px_-6px_rgba(59,130,246,0.8)] transition-transform duration-300 group-hover:scale-105">
                 <Zap className="h-5 w-5" />
               </div>
 
@@ -484,10 +485,10 @@ export const LandingPage = () => {
         data-scroll-reveal
         className="section-scroll-reveal border-t border-white/[0.06] py-12 sm:py-16 lg:py-20"
       >
-        <div className="relative mx-auto max-w-4xl overflow-hidden rounded-[32px] border border-white/[0.09] bg-gradient-to-br from-blue-600/15 via-indigo-600/10 to-cyan-500/10 px-6 py-12 text-center sm:px-12 sm:py-16">
+        <div className="relative mx-auto max-w-4xl overflow-hidden rounded-[32px] border border-white/[0.09] bg-gradient-to-br from-cyan-600/15 via-teal-600/10 to-cyan-500/10 px-6 py-12 text-center sm:px-12 sm:py-16">
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -top-32 left-1/2 h-72 w-[620px] -translate-x-1/2 rounded-full bg-blue-500/25 blur-[110px]"
+            className="pointer-events-none absolute -top-32 left-1/2 h-72 w-[620px] -translate-x-1/2 rounded-full bg-cyan-500/25 blur-[110px]"
           />
           <div
             aria-hidden="true"

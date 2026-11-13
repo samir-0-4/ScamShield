@@ -30,10 +30,10 @@ const icons = {
 };
 
 const colors = {
-  INVESTIGATION: 'border-blue-500/50 bg-[#0a1628]/95 text-blue-200 shadow-[0_4px_20px_rgba(59,130,246,0.25)]',
+  INVESTIGATION: 'border-cyan-500/50 bg-[#0a1628]/95 text-cyan-200 shadow-[0_4px_20px_rgba(59,130,246,0.25)]',
   MESSAGE: 'border-sky-500/50 bg-[#081726]/95 text-sky-200 shadow-[0_4px_20px_rgba(14,165,233,0.2)]',
   URL: 'border-cyan-500/50 bg-[#071920]/95 text-cyan-200 shadow-[0_4px_20px_rgba(6,182,212,0.2)]',
-  DOMAIN: 'border-indigo-500/50 bg-[#0e122b]/95 text-indigo-200 shadow-[0_4px_20px_rgba(99,102,241,0.2)]',
+  DOMAIN: 'border-violet-500/50 bg-[#0e122b]/95 text-violet-200 shadow-[0_4px_20px_rgba(99,102,241,0.2)]',
   EMAIL: 'border-violet-500/50 bg-[#140e28]/95 text-violet-200 shadow-[0_4px_20px_rgba(139,92,246,0.2)]',
   FILE: 'border-slate-500/40 bg-[#0f1422]/95 text-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.4)]',
   THREAT_INDICATOR: 'border-rose-500/50 bg-[#220a14]/95 text-rose-200 shadow-[0_4px_20px_rgba(244,63,94,0.3)]',
@@ -51,13 +51,13 @@ export const InvestigationNode = ({ data, selected }) => {
       className={cn(
         'relative min-w-[200px] max-w-[260px] rounded-2xl border p-4 shadow-card backdrop-blur-xl transition-all duration-150 select-none',
         colors[data.type] || 'border-white/[0.12] bg-[#0c101c] text-slate-200',
-        selected && 'ring-2 ring-blue-400 ring-offset-2 ring-offset-[#04060a] shadow-[0_0_28px_rgba(59,130,246,0.45)] scale-[1.02]'
+        selected && 'ring-2 ring-cyan-400 ring-offset-2 ring-offset-[#04060a] shadow-[0_0_28px_rgba(59,130,246,0.45)] scale-[1.02]'
       )}
     >
       <Handle
         type="target"
         position={Position.Left}
-        className="!h-3 !w-3 !border-2 !border-[#04060a] !bg-blue-400 !shadow-[0_0_8px_rgba(59,130,246,0.8)]"
+        className="!h-3 !w-3 !border-2 !border-[#04060a] !bg-cyan-400 !shadow-[0_0_8px_rgba(59,130,246,0.8)]"
       />
       <div className="flex items-start gap-3">
         <div className="p-2 rounded-xl bg-black/50 border border-white/10 shrink-0 shadow-sm">
@@ -85,7 +85,7 @@ export const InvestigationNode = ({ data, selected }) => {
       <Handle
         type="source"
         position={Position.Right}
-        className="!h-3 !w-3 !border-2 !border-[#04060a] !bg-blue-400 !shadow-[0_0_8px_rgba(59,130,246,0.8)]"
+        className="!h-3 !w-3 !border-2 !border-[#04060a] !bg-cyan-400 !shadow-[0_0_8px_rgba(59,130,246,0.8)]"
       />
     </div>
   );

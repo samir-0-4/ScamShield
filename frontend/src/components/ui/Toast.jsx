@@ -12,7 +12,7 @@ const TOAST_ICONS = {
 const TOAST_BORDERS = {
   success: 'border-emerald-500/35 bg-[#0a1815]/95 text-emerald-300 shadow-[0_8px_32px_rgba(16,185,129,0.25)]',
   error: 'border-rose-500/35 bg-[#1b0a11]/95 text-rose-300 shadow-[0_8px_32px_rgba(244,63,94,0.25)]',
-  info: 'border-blue-500/35 bg-[#0b101c]/95 text-blue-300 shadow-[0_8px_32px_rgba(59,130,246,0.25)]',
+  info: 'border-cyan-500/35 bg-[#0b101c]/95 text-cyan-300 shadow-[0_8px_32px_rgba(59,130,246,0.25)]',
 };
 
 const ToastContext = createContext(null);

@@ -16,7 +16,7 @@ export const Card = ({
       className={cn(
         'rounded-2xl border border-white/[0.08] bg-[#0c101c]/90 backdrop-blur-xl shadow-[0_4px_24px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)] min-w-0 transition-all duration-200',
         interactive &&
-          'hover:border-white/[0.18] hover:bg-[#101626] hover:shadow-[0_12px_36px_-6px_rgba(0,0,0,0.7),inset_0_1px_0_0_rgba(255,255,255,0.12)] focus-within:border-blue-500/50',
+          'hover:border-cyan-400/30 hover:bg-[#101626] hover:shadow-[0_12px_36px_-6px_rgba(0,0,0,0.7),inset_0_1px_0_0_rgba(255,255,255,0.12)] focus-within:border-cyan-500/50',
         className
       )}
       {...props}

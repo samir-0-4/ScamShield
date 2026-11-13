@@ -1,406 +1,389 @@
-# PhantomTrace / ScamShield
+# PhantomTrace
 
-> **AI-Assisted Scam & Digital-Threat Forensic Investigation Platform**  
-> Connect suspicious messages, phishing URLs, fraudulent emails, documents, and screenshot evidence into an explainable relationship graph backed by live threat intelligence and specialized AI agents.
+> **Investigate entire scam campaigns — not just individual URLs.**
 
 [![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.2-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![React](https://img.shields.io/badge/React-18-blue.svg)](https://react.dev/)
-[![Vite](https://img.shields.io/badge/Vite-6.4-purple.svg)](https://vitejs.dev/)
+[![Vite](https://img.shields.io/badge/Vite-6-purple.svg)](https://vitejs.dev/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue.svg)](https://www.postgresql.org/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 ---
 
-## Table of Contents
+## Problem Statement
 
-- [Overview](#overview)
-- [Architecture & Workflow](#architecture--workflow)
-- [Project Verification Status](#project-verification-status)
-- [Core Features](#core-features)
-  - [1. Multi-Evidence Ingestion & Workspace](#1-multi-evidence-ingestion--workspace)
-  - [2. Deterministic Indicator Extraction](#2-deterministic-indicator-extraction)
-  - [3. Live Threat Intelligence Integration](#3-live-threat-intelligence-integration)
-  - [4. Multi-Agent AI Forensic Reasoning (Groq)](#4-multi-agent-ai-forensic-reasoning-groq)
-  - [5. Interactive Evidence Relationship Graph](#5-interactive-evidence-relationship-graph)
-  - [6. Explainable Risk Assessment Engine](#6-explainable-risk-assessment-engine)
-  - [7. Forensic Reporting & Print-to-PDF](#7-forensic-reporting--print-to-pdf)
-- [Technology Stack](#technology-stack)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Environment Setup](#environment-setup)
-  - [Starting the Services](#starting-the-services)
-- [Demo Scenario Execution](#demo-scenario-execution)
-- [REST API Reference](#rest-api-reference)
-- [Testing & Quality Assurance](#testing--quality-assurance)
-- [Security Architecture](#security-architecture)
-- [Production Roadmap](#production-roadmap)
-- [License](#license)
+Modern social-engineering attacks are **fragmented by design**. A victim receives a suspicious SMS, clicks a redirect URL, opens a spoofed email, and scans a payment QR — each piece of evidence exists in a different channel. Existing tools (VirusTotal, URLhaus, free link scanners) examine each artifact **in isolation**. They answer "is this URL bad?" but cannot answer "are these three separate messages part of the same campaign?"
+
+Investigators and security-aware individuals have no accessible tool to:
+- Connect fragmented evidence into a coherent case dossier
+- Distinguish **verified facts** from **AI hypotheses** from **unknowns**
+- Reconstruct the campaign as a relationship graph rather than a checklist
 
 ---
 
-## Overview
+## Solution
 
-Investigating modern scams and social engineering campaigns requires connecting fragmented clues: a WhatsApp urgency message, a short redirect URL, an impersonated executive email, and a payment QR code. Traditional tools analyze these in isolation.
+**PhantomTrace** is an AI-assisted forensic investigation platform that connects suspicious messages, URLs, emails, documents, and screenshots into a single explainable case. It:
 
-**PhantomTrace** connects all evidence into a single case dossier. It extracts network and linguistic indicators deterministically, queries live threat feeds (VirusTotal and URLhaus), runs multi-agent AI forensic assessments through an OpenAI-compatible Groq backend, maps relationship graphs via React Flow, calculates a transparent 0–100 risk score, and generates court/audit-ready investigation reports.
+1. **Ingests** multiple types of evidence in one investigation workspace
+2. **Extracts** indicators deterministically (regex-first, no LLM required for extraction)
+3. **Queries** live threat intelligence (VirusTotal, URLhaus) with explicit unavailability handling
+4. **Runs** multi-agent AI forensic analysis via Groq (LLaMA-3.3-70B), labelling results `AI_INFERENCE`
+5. **Correlates** evidence into a typed relationship graph (`SHARES_INDICATOR`, `CONTAINS_URL`, etc.)
+6. **Scores** risk transparently using configurable heuristic weights (0–100 scale)
+7. **Generates** printable investigation reports for audit or escalation
 
 ---
 
-## Architecture & Workflow
+## Why PhantomTrace is Different
 
-```text
-┌────────────────────────────────────────────────────────────────────────────┐
-│                        React 18 / Tailwind Frontend                        │
-│   (Dashboard, Evidence Workspace, React Flow Graph, Live Threat Feeds)     │
-└─────────────────────────────────────┬──────────────────────────────────────┘
-                                      │ REST / JSON (JWT Auth)
-                                      ▼
-┌────────────────────────────────────────────────────────────────────────────┐
-│                      Spring Boot 3.4.2 Core Engine                         │
-│  ┌───────────────────────┐ ┌───────────────────────┐ ┌──────────────────┐  │
-│  │ Extraction Service    │ │ Correlation Engine    │ │ Risk Engine      │  │
-│  │ (Regex, PDF, ZXing)   │ │ (Graph Node/Edge Gen) │ │ (Heuristic Math) │  │
-│  └───────────┬───────────┘ └───────────┬───────────┘ └────────┬─────────┘  │
-│              │                         │                      │            │
-│  ┌───────────▼─────────────────────────▼──────────────────────▼──────────┐  │
-│  │ Threat Intelligence Adapters       Multi-Agent AI Orchestrator        │  │
-│  │ (VirusTotal v3 & URLhaus)          (Groq LLaMA 3.3 70B System)        │  │
-│  └───────────────────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────┬──────────────────────────────────────┘
-                                      │ JDBC / Flyway
-                                      ▼
-┌────────────────────────────────────────────────────────────────────────────┐
-│                      PostgreSQL 16 Database Storage                         │
-│   (Users, Investigations, Evidence, Extracted Indicators, Threat Lookups,  │
-│    Relationships, Risk Assessments, Audit Reports)                         │
-└────────────────────────────────────────────────────────────────────────────┘
+| Dimension | Traditional tools | PhantomTrace |
+|---|---|---|
+| **Scope** | One URL / one file at a time | Entire campaign in one investigation |
+| **Epistemic honesty** | Binary clean/malicious labels | `VERIFIED` / `AI_INFERENCE` / `UNKNOWN` on every finding |
+| **Evidence model** | Stateless scan | Persistent case with provenance graph |
+| **AI role** | Chat assistant or black box | Structured agents with JSON outputs, labelled as inference |
+| **Campaign reconstruction** | Not supported | Relationship graph links shared indicators across evidence |
+| **Transparency** | Score with no explanation | Each risk signal listed with its weight and source |
+
+---
+
+## Key Features
+
+🔍 **Multi-Format Evidence Ingestion** — Text messages, URLs, emails, PDFs, images (PNG/JPG/WEBP) in one case workspace. MIME validation, 25 MB limit, duplicate detection.
+
+📋 **Deterministic Indicator Extraction** — RFC-compliant URLs, domains, IPv4s, emails, phone numbers, payment cues (UPI, wire, gift cards), urgency phrases — extracted with regex, no LLM dependency.
+
+🌐 **Live Threat Intelligence** — VirusTotal v3 (URL-safe Base64 encoding, engine stats) and URLhaus/Abuse.ch integration with 1-hour database cache. Unavailable providers shown as unavailable, never as clean.
+
+🤖 **Multi-Agent AI Forensic Reasoning** — Six specialized Groq agents (Text, URL, Email, File, Correlation, Report Detective) share one provider configuration. Outputs are structured JSON labelled `AI_INFERENCE`.
+
+📊 **Interactive Evidence Relationship Graph** — React Flow canvas with typed nodes (Evidence, URL, Domain, Email, IP) and semantic edges. Minimap, zoom/pan, node detail sidebar, provenance trails, and campaign reconstruction.
+
+📈 **Explainable Risk Assessment** — Configurable heuristic weights: Verified Malicious +40, Credential Request +25, Payment Demand +20, Impersonation +15, Urgency +10, Unusual URL +10. Score ≠ probability; confidence tracked separately.
+
+📄 **Forensic Reports & PDF Export** — Immutable report snapshots: executive summary, forensic timeline, extracted artifacts, threat proof links, remediation steps. Browser Print → Save as PDF.
+
+---
+
+## Architecture
+
+```mermaid
+flowchart LR
+    FE["React 18 / Vite\n(SPA)"] -->|"REST/JSON + JWT"| BE["Spring Boot 3.4.2\n(Core Engine)"]
+    BE --> DB[("PostgreSQL 16\n+ Flyway V1–V9")]
+    BE --> EXTRACT["Deterministic\nExtraction"]
+    BE --> CORR["Correlation\nEngine"]
+    BE --> RISK["Risk\nAssessment"]
+    BE --> REPORT["Report\nSnapshots"]
+    BE --> AI["Groq AI\nLLaMA-3.3-70B"]
+    BE --> VT["VirusTotal\nAPI v3"]
+    BE --> UH["URLhaus\nAbuse.ch"]
+    EXTRACT --> CORR
+    CORR --> RISK
+    AI --> REPORT
+    VT --> RISK
+    UH --> RISK
 ```
-
----
-
-## Project Verification Status
-
-**Status: Platform Fully Verified & Operational**
-
-| Milestone / Component | Coverage | Status |
-|---|:---:|:---|
-| Backend Test Suite (`mvn test`) | **75 / 75 passed** | 100% Pass Rate |
-| Frontend Test Suite (`vitest run`) | **25 / 25 passed** | 100% Pass Rate |
-| Frontend Production Build (`vite build`) | **0 errors** | Passed |
-| PostgreSQL 16 & Flyway Migrations | **V1 → V9** | Applied & Healthy |
-| Live External Threat Feeds (VirusTotal & URLhaus) | **Verified** | Operational |
-| Groq AI Multi-Agent Forensic Pipeline | **Verified** | Operational |
-| End-to-End Demo Script (`demo-scenario.sh`) | **Verified** | Passed |
-| Zero Secrets Tracked in Git | **Audited** | Clean |
-
----
-
-## Core Features
-
-### 1. Multi-Evidence Ingestion & Workspace
-- **Multi-Format Support**: Ingest Text Messages, URLs, Emails, Screenshots (PNG, JPG, WEBP), and PDF documents in one investigation.
-- **Safe Parsing (Non-Executing)**:
-  - **PDF Documents**: Parsed using Apache PDFBox for selectable text extraction.
-  - **Images & QR Codes**: Decoded using ZXing for embedded URL/text payloads without opening or visiting targets.
-  - **OCR Capabilities**: Supported via Tess4J for image-based text analysis.
-- **Integrity Validation**: Enforces MIME validation, file size limits (25MB default), duplicate detection, and private storage isolation.
-
-### 2. Deterministic Indicator Extraction
-Extracts forensic artifacts without reliance on third-party APIs:
-- **Network Indicators**: RFC-compliant URLs, domains, IPv4 addresses, and email addresses.
-- **Telecom & Identification**: Phone numbers and user account identifiers.
-- **Fraud Markers**: Payment cues (UPI, wire, gift cards), credential harvesting phrases, OTP requests, and urgency language.
-- **Indicator Normalization**: Preserves original values while calculating canonical forms for deterministic deduplication.
-
-### 3. Live Threat Intelligence Integration
-Decoupled clients query external reputation feeds with zero-trust fallbacks:
-- **VirusTotal API v3**:
-  - Uses URL-safe unpadded Base64 identifier encoding.
-  - Retrieves live engine detection stats (`malicious`, `suspicious`, `undetected`, `harmless`) and reference hashes.
-  - Normalizes verdicts to `MALICIOUS`, `SUSPICIOUS`, or `NO_MALICIOUS_RESULT`.
-- **URLhaus (Abuse.ch) API**:
-  - Cross-references URLs against active malware and command-and-control distribution feeds.
-  - Correctly categorizes clean (`NOT_FOUND` / `no_results`) vs. weaponized indicators.
-- **Reliability & Cache Architecture**:
-  - **Zero-Lock Caching**: 1-hour database cache prevents redundant API calls for completed verdicts.
-  - **Automatic Cache Bypass**: If lookups previously failed due to missing credentials, updating keys and re-verifying immediately queries the external API.
-  - **Deduplication**: Surfaces the latest provider verdict per indicator while retaining historical audit logs.
-
-### 4. Multi-Agent AI Forensic Reasoning (Groq)
-Powered by Groq's high-throughput LLaMA 3.3 70B engine using specialized, isolated system prompts:
-- **Text Detective Agent**: Analyzes psychological pressure, scam taxonomies, and manipulative intent.
-- **URL Detective Agent**: Unmasks evasive redirects, typosquatting, brand impersonation, and homoglyphs.
-- **Email Detective Agent**: Scans headers, deceptive display names, and domain spoofing patterns.
-- **File Detective Agent**: Analyzes extracted document text and QR payloads.
-- **Correlation Agent**: Discovers hidden links between disparate evidence items.
-- **Report Agent**: Synthesizes structured findings, key takeaways, and remediation steps.
-- **Zero-Trust Epistemics**: Structured JSON outputs with confidence scoring. If Groq is unavailable, the system displays explicit fallback notices.
-
-### 5. Interactive Evidence Relationship Graph
-An interactive forensic relationship graph powered by React Flow (`@xyflow/react`):
-- **Graph Nodes**: Investigations, Evidence, URLs, Domains, Emails, IPs, Files, and Threat Feeds.
-- **Semantic Edges**: `CONTAINS_URL`, `REFERENCES_DOMAIN`, `MENTIONS_EMAIL`, `SHARES_INDICATOR`, `MATCHES_THREAT_INDICATOR`, and `ASSOCIATED_WITH`.
-- **Investigator Controls**: Interactive zoom, pan, minimap, fit-to-view, node filtering, and evidence provenance sidebar.
-
-### 6. Explainable Risk Assessment Engine
-Calculates a transparent heuristic risk score from 0 to 100:
-- **Risk Tiers**: `LOW` (0–29), `MODERATE` (30–59), `HIGH` (60–84), `CRITICAL` (85–100), and `INCONCLUSIVE`.
-- **Configurable Signal Weights**:
-  - Verified Malicious Threat Match: **+40**
-  - Credential / Password Request: **+25**
-  - Upfront Payment / Financial Demand: **+20**
-  - Identity Impersonation: **+15**
-  - Urgency / Time-Pressure Trigger: **+10**
-  - Unusual / Deceptive URL Structure: **+10**
-- **Deduplicated Scoring**: Duplicate signals from the same indicator are bounded to avoid score inflation.
-- **Separate Confidence Metric**: Confidence is tracked independently from the risk score to reflect evidence completeness.
-
-### 7. Forensic Reporting & Print-to-PDF
-- **Comprehensive Case Snapshots**: Generates immutable reports containing executive summaries, forensic timelines, extracted artifacts, external threat proofs, and actionable recommendations.
-- **Print & PDF Optimization**: Clean print layouts with print-specific page breaks, high-contrast typography, and hidden navigation bars for easy **Print $\rightarrow$ Save as PDF** export.
 
 ---
 
 ## Technology Stack
 
-### Frontend
-- **Framework**: React 18 with Vite
-- **Styling**: Tailwind CSS with custom cyber-threat dark design system
-- **State & Routing**: React Router v6, custom context providers
-- **Visualization**: React Flow (`@xyflow/react`), Recharts, Lucide React
-- **HTTP Client**: Axios with JWT authentication interceptors
-- **Testing**: Vitest, React Testing Library, jsdom
-
-### Backend
-- **Framework**: Spring Boot 3.4.2 (Java 21)
-- **Security**: Spring Security 6 with HS256 HMAC JWT authentication
-- **Persistence**: Spring Data JPA, Hibernate, PostgreSQL 16
-- **Database Migrations**: Flyway (V1 through V9)
-- **Document & Media Analysis**: Apache PDFBox 3.0.4, ZXing 3.5.3, Tess4J 5.13.0
-- **HTTP & Resilience**: Spring RestClient with custom timeout and error decoders
-- **Testing**: JUnit 5, Mockito, AssertJ, H2 (for unit/mock testing)
+| Layer | Technology |
+|---|---|
+| **Frontend** | React 18, Vite 6, Tailwind CSS 3, React Router v6, Axios |
+| **Visualization** | @xyflow/react (React Flow), Recharts, Lucide React |
+| **Backend** | Spring Boot 3.4.2, Java 21, Spring Security 6, Spring Data JPA |
+| **AI** | Groq API (LLaMA-3.3-70B-versatile) via OpenAI-compatible endpoint |
+| **Database** | PostgreSQL 16, Flyway migrations (V1–V9), Hibernate |
+| **Document/Media** | Apache PDFBox 3.0.4, ZXing 3.5.3, Tess4J 5.13.0 |
+| **Auth** | JJWT 0.12.6 — HS256 JWT, bcrypt passwords |
+| **Testing** | Vitest + @testing-library/react (frontend); JUnit 5 + Mockito (backend) |
+| **Container** | Docker, docker-compose |
 
 ---
 
-## Getting Started
+## Screenshots
+
+> Screenshots are not committed yet; visual verification remains a manual release step.
+
+---
+
+## Installation
 
 ### Prerequisites
-- **Node.js**: v20 or newer
-- **JDK**: Java 21 or newer
-- **Maven**: 3.9 or newer
-- **Docker & Docker Compose**: Installed and running
+
+- **Node.js** v20+
+- **Java** 21+ (JDK)
+- **Maven** 3.9+
+- **Docker** & Docker Compose
+
+### Step-by-Step
+
+**1. Clone the repository**
+```bash
+git clone https://github.com/samir-0-4/ScamShield.git phantomtrace
+cd phantomtrace
+```
+
+**2. Copy environment templates**
+```bash
+cp .env.example .env
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+```
+
+**3. Edit `backend/.env`** — fill in your secrets (see [Configuration](#configuration) below).
 
 ---
 
-### Environment Setup
+## Configuration
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/your-org/phantomtrace.git
-   cd phantomtrace
-   ```
+### Environment Variables
 
-2. **Configure Environment Variables**:
-   ```bash
-   cp .env.example .env
-   cp backend/.env.example backend/.env
-   cp frontend/.env.example frontend/.env
-   ```
+| Variable | Required | Description | Example |
+|---|:---:|---|---|
+| `POSTGRES_DB` | ✅ | Database name | `phantomtrace` |
+| `POSTGRES_USER` | ✅ | DB username | `phantomtrace_user` |
+| `POSTGRES_PASSWORD` | ✅ | DB password | *(generate)* |
+| `DATABASE_URL` | ✅ | JDBC connection URL | `jdbc:postgresql://localhost:5432/phantomtrace` |
+| `JWT_SECRET` | ✅ | HS256 signing key (≥32 bytes base64) | `openssl rand -base64 32` |
+| `JWT_EXPIRATION_MS` | — | Token lifetime in ms | `86400000` (24h) |
+| `GROQ_API_KEY` | ⚠️ | Groq API key — AI features degrade gracefully without it | `gsk_...` |
+| `GROQ_DEFAULT_MODEL` | — | Groq model name | `llama-3.3-70b-versatile` |
+| `VIRUSTOTAL_API_KEY` | ⚠️ | VirusTotal v3 key — threat intel degrades gracefully | `...` |
+| `URLHAUS_API_KEY` | ⚠️ | URLhaus key | `...` |
+| `FILE_STORAGE_TYPE` | — | `local` (default) | `local` |
+| `FILE_STORAGE_UPLOAD_DIR` | — | Upload directory | `./uploads` |
+| `VITE_API_BASE_URL` | ✅ | Backend API base URL (frontend) | `http://localhost:8080/api/v1` |
 
-3. **Backend Environment Variables (`backend/.env`)**:
-   ```env
-   # Server & Profiles
-   SERVER_PORT=8080
-   SPRING_PROFILES_ACTIVE=dev
+> [!IMPORTANT]
+> `GROQ_API_KEY`, `VIRUSTOTAL_API_KEY`, and `URLHAUS_API_KEY` are **optional**. When absent, the platform shows explicit "unavailable" states — it does **not** pretend services are clean.
 
-   # PostgreSQL Database
-   POSTGRES_DB=phantomtrace
-   POSTGRES_USER=phantomtrace_user
-   POSTGRES_PASSWORD=change_me
-   DATABASE_URL=jdbc:postgresql://localhost:5434/phantomtrace
-
-   # Security (Generate with: openssl rand -base64 32)
-   JWT_SECRET=your_32_character_minimum_base64_secret_here
-   JWT_EXPIRATION_MS=86400000
-
-   # AI Provider (Groq API)
-   GROQ_API_KEY=your_groq_api_key_here
-   GROQ_BASE_URL=https://api.groq.com/openai/v1
-   GROQ_DEFAULT_MODEL=llama-3.3-70b-versatile
-
-   # External Threat Intelligence
-   VIRUSTOTAL_API_KEY=your_virustotal_api_key_here
-   URLHAUS_API_KEY=your_urlhaus_api_key_here
-
-   # Storage
-   FILE_STORAGE_TYPE=local
-   FILE_STORAGE_UPLOAD_DIR=./uploads
-   ```
-
-   > **Zero-Config `.env` Auto-Loading**: `PhantomTraceApplication` automatically parses `.env` and `backend/.env` on startup. You do **not** need to manually export variables in your shell before starting the backend.
-
-4. **Frontend Environment Variables (`frontend/.env`)**:
-   ```env
-   VITE_API_BASE_URL=http://localhost:8080/api/v1
-   VITE_APP_NAME=PhantomTrace
-   ```
+> [!CAUTION]
+> Never commit `.env` files. The pre-commit hook at `.kiro/hooks/pre-commit-check.sh` checks for staged `.env` files and blocks the commit.
 
 ---
 
-### Starting the Services
+## Local Development
 
-#### Step 1: Start PostgreSQL via Docker Compose
-From the project root:
+### 1. Start PostgreSQL (Docker)
+
 ```bash
 docker compose up -d postgres
 ```
-Verify the container is healthy:
+
+Verify:
 ```bash
 docker compose ps
 ```
 
-#### Step 2: Start the Backend (Spring Boot)
-In a new terminal:
+### 2. Start the Backend
+
 ```bash
 cd backend
 mvn spring-boot:run
 ```
-The backend starts on `http://localhost:8080`. Flyway automatically verifies and applies migrations V1–V9.  
-Verify backend health:
+
+Backend starts on `http://localhost:8080`. Flyway automatically applies migrations V1–V9.
+
+Health check:
 ```bash
 curl http://localhost:8080/api/v1/health
 # {"status":"UP","application":"PhantomTrace"}
 ```
 
-#### Step 3: Start the Frontend (React / Vite)
-In a new terminal:
+Campaign reconstruction:
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8080/api/v1/investigations/<investigation-id>/campaign
+```
+
+### 3. Start the Frontend
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Open **`http://localhost:5173`** in your browser.
+
+Open `http://localhost:5173`.
 
 ---
 
-## Demo Scenario Execution
+## Database Setup
 
-To run an automated forensic case demonstration:
+Flyway runs automatically on backend startup. Migrations are located in `backend/src/main/resources/db/migration/`:
+
+| Migration | Description |
+|---|---|
+| V1 | Users and authentication |
+| V2 | Investigations |
+| V3 | Evidence items |
+| V4 | Extracted indicators |
+| V5 | Threat lookups |
+| V6 | AI agent executions |
+| V7 | Correlation / relationship graph |
+| V8 | Risk assessments |
+| V9 | Investigation reports |
+
+No manual schema setup is required.
+
+---
+
+## Testing
+
+### Frontend
 
 ```bash
-./scripts/demo-scenario.sh
+cd frontend
+npm test          # Run Vitest suite (vitest run)
+npm run lint      # ESLint
+npm run build     # Production build validation
 ```
 
-This script automatically:
-1. Registers a temporary analyst account and logs in via JWT.
-2. Creates an investigation: `Remote Job Offer Investigation`.
-3. Ingests synthetic scam messages and payment URL indicators.
-4. Triggers deterministic indicator extraction and live threat feed lookups.
-5. Computes heuristic risk assessment and builds correlation graph relationships.
-6. Generates a printable forensic report snapshot.
+### Backend
 
----
-
-## REST API Reference
-
-All endpoints return standard envelopes:
-```json
-{
-  "success": true,
-  "data": { ... },
-  "message": "Operation description",
-  "timestamp": "2026-11-12T12:00:00Z"
-}
+```bash
+cd backend
+mvn clean test    # JUnit 5 + Mockito suite
 ```
 
-### Authentication
-| Method | Endpoint | Description |
-|:---|:---|:---|
-| `POST` | `/api/v1/auth/register` | Register a new analyst account |
-| `POST` | `/api/v1/auth/login` | Authenticate and obtain JWT bearer token |
-| `GET` | `/api/v1/auth/me` | Fetch authenticated user profile |
+### Full Suite
 
-### Investigations
-| Method | Endpoint | Description |
-|:---|:---|:---|
-| `GET` | `/api/v1/investigations` | List user's investigations with status/category filters |
-| `POST` | `/api/v1/investigations` | Create a new investigation case |
-| `GET` | `/api/v1/investigations/{id}` | Retrieve investigation metadata |
-| `PATCH` | `/api/v1/investigations/{id}` | Update title, description, or status |
-| `DELETE` | `/api/v1/investigations/{id}` | Delete investigation and associated evidence |
-
-### Evidence Management
-| Method | Endpoint | Description |
-|:---|:---|:---|
-| `POST` | `/api/v1/investigations/{id}/evidence` | Submit URL, Text, Email, or File evidence |
-| `GET` | `/api/v1/investigations/{id}/evidence` | List all evidence items for a case |
-| `GET` | `/api/v1/evidence/{evidenceId}` | Get single evidence item details |
-| `DELETE` | `/api/v1/evidence/{evidenceId}` | Delete evidence item |
-| `GET` | `/api/v1/evidence/{evidenceId}/indicators` | List extracted deterministic indicators |
-| `POST` | `/api/v1/evidence/{evidenceId}/analysis` | Trigger AI agent analysis |
-| `POST` | `/api/v1/evidence/{evidenceId}/threat-lookups`| Trigger live VirusTotal & URLhaus verification |
-| `GET` | `/api/v1/evidence/{evidenceId}/threat-lookups` | List threat intelligence results |
-
-### Graph & Reports
-| Method | Endpoint | Description |
-|:---|:---|:---|
-| `POST` | `/api/v1/investigations/{id}/graph/generate` | Generate relationship graph nodes and edges |
-| `GET` | `/api/v1/investigations/{id}/graph` | Retrieve graph visualization payload |
-| `POST` | `/api/v1/investigations/{id}/risk-assessment` | Run deterministic heuristic risk engine |
-| `GET` | `/api/v1/investigations/{id}/risk-assessment` | Retrieve latest risk score and signals |
-| `POST` | `/api/v1/investigations/{id}/reports` | Compile and persist final investigation report |
-| `GET` | `/api/v1/investigations/{id}/reports` | List historical case reports |
-
----
-
-## Testing & Quality Assurance
-
-Run the unified test runner:
 ```bash
 ./scripts/verify-all.sh
 ```
 
-Or run test suites independently:
+---
+
+## Deployment
+
+### Docker Compose (All Services)
 
 ```bash
-# Backend unit & integration tests (75 tests)
-cd backend
-mvn clean test
-
-# Frontend component & route tests (25 tests)
-cd frontend
-npm test -- --run
-
-# Frontend linting
-npm run lint
-
-# Production build validation
-npm run build
+docker compose up --build
 ```
 
+This starts PostgreSQL and can be extended with backend/frontend service definitions.
+
+### Individual Docker Builds
+
+```bash
+# Backend
+cd backend
+docker build -t phantomtrace-backend .
+
+# Frontend
+cd frontend
+docker build -t phantomtrace-frontend .
+```
+
+> [!NOTE]
+> File storage defaults to local volume (`./uploads`). For production, replace with S3-compatible object storage.
+
 ---
 
-## Security Architecture
+## Security Considerations
 
-- **Zero-Trust AI Design**: AI outputs are strictly treated as advisory hypotheses and require deterministic corroboration (hashes, URL lookups, regex indicators).
-- **Strict Tenant & Ownership Isolation**: Every API endpoint validates ownership to prevent IDOR (Insecure Direct Object Reference) vulnerabilities.
-- **Client Credential Isolation**: Backend API keys (`GROQ_API_KEY`, `VIRUSTOTAL_API_KEY`, `URLHAUS_API_KEY`, database credentials, and JWT signing keys) are never exposed to client-side scripts.
-- **Safe Execution Boundary**: Uploaded files and submitted URLs are analyzed statically; arbitrary user links are never automatically executed, downloaded, or visited by the backend server.
-- **Cryptographic JWT Validation**: Validates minimum 256-bit signing keys and automatically rejects known insecure/placeholder secrets on startup.
+| Area | Implementation |
+|---|---|
+| **SSRF Protection** | Uploaded URLs are never fetched by the backend server. External lookups go only to whitelisted APIs (VirusTotal, URLhaus, Groq). |
+| **File Validation** | MIME type check, 25 MB size limit, signature validation. Uploaded files are never executed. |
+| **JWT Auth** | HS256, minimum 256-bit key enforced at startup. Known placeholder/weak keys rejected. |
+| **API Key Isolation** | `GROQ_API_KEY`, `VIRUSTOTAL_API_KEY`, `URLHAUS_API_KEY` are backend-only. Never exposed to frontend or logs. |
+| **SQL Injection** | Parameterized queries via Spring Data JPA/Hibernate. No raw SQL string concatenation. |
+| **IDOR Prevention** | Every endpoint validates resource ownership against the authenticated user's ID. |
+| **CORS** | Locked to configured frontend origin. |
+| **Rate Limiting** | Bucket4j limits registration, login, investigation, and evidence requests per client IP. |
+| **Secret Scanning** | Pre-commit hook blocks `.env` file commits. |
 
 ---
 
-## Production Roadmap
+## Limitations
 
-- [ ] **Object Storage Integration**: Transition file uploads from local volume storage to AWS S3 / Google Cloud Storage.
-- [ ] **Asynchronous Task Queuing**: Implement Spring Batch / Celery / Redis Streams for high-volume batch evidence analysis.
-- [ ] **Advanced OCR**: Expanded Tesseract multi-language character recognition models for low-contrast document scans.
-- [ ] **STIX / TAXII Export**: Export verified threat indicators in standardized STIX 2.1 formats for enterprise SIEM ingestion.
-- [ ] **Role-Based Collaboration**: Multi-analyst case sharing and immutable audit trail logging.
+These are honest limitations of the current implementation:
+
+- **OCR accuracy**: Tess4J OCR works best on clean, high-contrast images. Low-resolution screenshots may produce garbled text; this is acknowledged in the UI.
+- **AI_INFERENCE not verified**: All Groq AI outputs are labelled `AI_INFERENCE`. PhantomTrace does not cross-verify AI claims against external databases.
+- **No cloud metadata lookups**: The system does not query WHOIS, RDAP, ASN, or geolocation APIs. Domain age and registrar information are not available.
+- **Groq rate limits**: Free-tier Groq accounts have token-per-minute limits. High-volume analysis may hit these; the system shows explicit error states, not silently degraded results.
+- **Local storage only**: File uploads use local disk. Not suitable for horizontally scaled production without migrating to object storage.
+- **QR decoding pipeline**: ZXing is integrated for QR extraction from images, but the end-to-end image → QR → analysis pipeline is not fully surfaced in the UI demo flow.
+- **Risk score ≠ fraud probability**: The heuristic risk score is a weighted sum of signals, not a calibrated probability. It is explicitly not suitable as sole evidence of fraud.
+
+---
+
+## Kiro Development Workflow
+
+This project was built using **[Kiro IDE](https://kiro.dev)** as the primary AI-assisted development environment. The `.kiro/` directory contains durable evidence of this workflow:
+
+### Steering Documents (`.kiro/steering/`)
+
+- **`project-rules.md`** — Core system invariants enforced across all Kiro sessions:
+  - **Epistemic Truth Principle**: Every data point must be classified `VERIFIED`, `AI_INFERENCE`, or `UNKNOWN`. This rule directly shaped how AI outputs are stored and labelled in the database.
+  - **Architecture Boundaries**: Controllers stay thin; business logic lives in services; external APIs are isolated in `integration/` modules.
+  - **Safety Rule**: API keys must never appear in frontend code or logs.
+- **`architecture.md`** — Full system architecture description for Kiro context injection.
+- **`tech-stack.md`** — Canonical technology versions referenced during code generation.
+- **`security.md`** — Security constraints enforced during feature development.
+- **`coding-standards.md`** — Naming conventions, component structure, and patterns.
+- **`testing.md`** — Test coverage requirements and test runner commands.
+
+### Feature Specifications (`.kiro/specs/`)
+
+Each major feature was developed as a Kiro spec with `requirements.md`, `design.md`, and `tasks.md`:
+
+| Spec | Feature Driven |
+|---|---|
+| `frontend-foundation` | React app scaffold, routing, auth context, Tailwind dark theme |
+| `auth-foundation` | JWT registration/login, Spring Security config |
+| `backend-foundation` | Spring Boot project, Flyway V1 migration, health endpoint |
+| `evidence-submission` | Multi-format evidence upload API + UI |
+| `deterministic-evidence-extraction` | Regex extraction service, indicator normalization |
+| `threat-intelligence-integration` | VirusTotal v3 + URLhaus clients, caching |
+| `ai-analysis-agents` | Six Groq agents, shared provider, structured JSON responses |
+| `evidence-correlation` | Correlation orchestrator, graph node/edge generation |
+| `evidence-relationship-graph` | React Flow visualization, semantic edge rendering |
+| `risk-assessment` | Heuristic risk engine, configurable weights |
+| `investigation-results` | Results dashboard, threat feed display |
+| `investigation-reports` | Report compilation, print-to-PDF layout |
+| `hackathon-final-delivery` | End-to-end demo, verification, documentation |
+
+### Hooks (`.kiro/hooks/`)
+
+- **`pre-commit-check.sh`** — Verifies no `.env` files are staged in Git before allowing a commit.
+- **`frontend-lint-build.sh`** — Runs ESLint and Vite build check.
+- **`backend-test.sh`** — Runs backend unit tests.
+- **`secret-scan.sh`** — Scans staged files for accidentally hardcoded secrets.
+
+### Custom Agent (`.kiro/agents/`)
+
+- **`threat-analyst.md`** — Specialized Kiro agent persona for validating threat indicator extraction patterns, reviewing VirusTotal/URLhaus schema integrations, and ensuring AI prompts preserve epistemic integrity.
+
+> [!NOTE]
+> The repository contains these artifacts as checked-in evidence of Kiro-driven development. The project does not claim that every hook or agent was invoked for every change; the durable evidence is the specs, steering files, and task breakdowns that guided the implementation.
+
+---
+
+## Hackathon Category
+
+**Frankenstein** — PhantomTrace is built entirely with Kiro IDE as the primary development tool, with AI assistance shaping architecture decisions, feature specifications, code generation, and test writing throughout the November 10–13, 2026 development window.
+
+---
+
+## Pre-Existing Code Disclosure
+
+**All code in this repository was written between November 10–13, 2026.**
+
+No pre-existing proprietary code, private libraries, or prior-built components were incorporated. All dependencies are open-source packages declared in `frontend/package.json` and `backend/pom.xml`.
 
 ---
 
 ## License
 
 This project is licensed under the **Apache License 2.0**. See the [LICENSE](LICENSE) file for details.
+
+Copyright 2026 PhantomTrace Contributors

@@ -2,7 +2,7 @@ import { cn } from '../../utils/cn';
 import { Spinner } from '../ui/Spinner';
 
 const BASE_BUTTON_CLASSES =
-  'relative inline-flex items-center justify-center gap-2 font-medium tracking-tight transition-all duration-150 ease-out select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#04060a] focus-visible:ring-blue-500 disabled:opacity-45 disabled:pointer-events-none active:scale-[0.98]';
+  'relative inline-flex items-center justify-center gap-2 font-medium tracking-tight transition-all duration-150 ease-out select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#04060a] focus-visible:ring-cyan-400 disabled:opacity-45 disabled:pointer-events-none active:scale-[0.98]';
 
 const SIZES = {
   xs: 'px-2.5 py-1 text-2xs min-h-[28px] rounded-lg',
@@ -14,7 +14,7 @@ const SIZES = {
 
 const VARIANTS = {
   primary:
-    'bg-gradient-to-b from-blue-500 to-blue-600 hover:from-blue-400 hover:to-blue-500 active:from-blue-600 active:to-blue-700 text-white border border-blue-400/35 shadow-[0_2px_12px_rgba(59,130,246,0.35),inset_0_1px_0_0_rgba(255,255,255,0.25)] hover:shadow-[0_4px_20px_rgba(59,130,246,0.5),inset_0_1px_0_0_rgba(255,255,255,0.3)]',
+    'bg-gradient-to-b from-cyan-400 to-cyan-600 hover:from-cyan-300 hover:to-cyan-500 active:from-cyan-500 active:to-cyan-700 text-slate-950 border border-cyan-300/50 shadow-[0_2px_12px_rgba(0,201,200,0.35),inset_0_1px_0_0_rgba(255,255,255,0.35)] hover:shadow-[0_4px_20px_rgba(0,201,200,0.5),inset_0_1px_0_0_rgba(255,255,255,0.3)]',
   secondary:
     'bg-[#0f172a] hover:bg-[#16223d] active:bg-[#0c1322] text-slate-200 hover:text-white border border-white/[0.12] hover:border-white/[0.22] shadow-[0_2px_8px_rgba(0,0,0,0.5),inset_0_1px_0_0_rgba(255,255,255,0.08)]',
   danger:
@@ -22,7 +22,7 @@ const VARIANTS = {
   ghost:
     'text-slate-300 hover:text-white hover:bg-white/[0.08] active:bg-white/[0.12] border border-transparent',
   outline:
-    'border border-white/[0.14] hover:border-blue-500/60 text-slate-200 hover:text-blue-300 bg-[#0a0f1d]/70 hover:bg-blue-500/[0.08] active:bg-blue-500/15 shadow-[0_2px_8px_rgba(0,0,0,0.4)]',
+    'border border-white/[0.14] hover:border-cyan-400/60 text-slate-200 hover:text-cyan-300 bg-[#0a0f1d]/70 hover:bg-cyan-500/[0.08] active:bg-cyan-500/15 shadow-[0_2px_8px_rgba(0,0,0,0.4)]',
 };
 
 export const Button = ({

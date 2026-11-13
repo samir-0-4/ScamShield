@@ -19,6 +19,7 @@ const InvestigationDetailsPage = lazy(() => import('../pages/InvestigationDetail
 const EvidenceAnalysisPage = lazy(() => import('../pages/EvidenceAnalysisPage'));
 const AnalysisResultsPage = lazy(() => import('../pages/AnalysisResultsPage'));
 const EvidenceGraphPage = lazy(() => import('../pages/EvidenceGraphPage'));
+const CampaignReconstructionPage = lazy(() => import('../pages/CampaignReconstructionPage'));
 const InvestigationReportPage = lazy(() => import('../pages/InvestigationReportPage'));
 const ReportsPage = lazy(() => import('../pages/ReportsPage'));
 const SettingsPage = lazy(() => import('../pages/SettingsPage'));
@@ -60,6 +61,7 @@ export const AppRoutes = () => (
         <Route path="investigations/:id/analysis" element={<EvidenceAnalysisPage />} />
         <Route path="investigations/:id/results" element={<AnalysisResultsPage />} />
         <Route path="investigations/:id/graph" element={<EvidenceGraphPage />} />
+        <Route path="investigations/:id/campaign" element={<CampaignReconstructionPage />} />
         <Route path="investigations/:id/report" element={<InvestigationReportPage />} />
         <Route path="reports" element={<ReportsPage />} />
         <Route path="settings" element={<SettingsPage />} />

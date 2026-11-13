@@ -3,6 +3,7 @@ package com.phantomtrace.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phantomtrace.dto.graph.InvestigationGraphResponse;
+import com.phantomtrace.dto.campaign.CampaignReconstructionResponse;
 import com.phantomtrace.dto.report.InvestigationReportResponse;
 import com.phantomtrace.dto.risk.RiskAssessmentResponse;
 import com.phantomtrace.entity.AgentExecution;
@@ -43,13 +44,15 @@ public class InvestigationReportService {
     private final InvestigationReportRepository reportRepository;
     private final ObjectMapper objectMapper;
     private final SecurityUtils securityUtils;
+    private final CampaignReconstructionService campaignReconstructionService;
 
     public InvestigationReportService(InvestigationRepository investigationRepository,
             EvidenceRepository evidenceRepository, ExtractedIndicatorRepository indicatorRepository,
             ThreatLookupRepository lookupRepository, AgentExecutionRepository executionRepository,
             EvidenceRelationshipRepository relationshipRepository, RiskAssessmentService riskAssessmentService,
             CorrelationOrchestrator correlationOrchestrator, InvestigationReportRepository reportRepository,
-            ObjectMapper objectMapper, SecurityUtils securityUtils) {
+            ObjectMapper objectMapper, SecurityUtils securityUtils,
+            CampaignReconstructionService campaignReconstructionService) {
         this.investigationRepository = investigationRepository;
         this.evidenceRepository = evidenceRepository;
         this.indicatorRepository = indicatorRepository;
@@ -61,6 +64,7 @@ public class InvestigationReportService {
         this.reportRepository = reportRepository;
         this.objectMapper = objectMapper;
         this.securityUtils = securityUtils;
+        this.campaignReconstructionService = campaignReconstructionService;
     }
 
     public InvestigationReportResponse create(UUID investigationId) {
@@ -74,6 +78,7 @@ public class InvestigationReportService {
             risk = null;
         }
         InvestigationGraphResponse graph = correlationOrchestrator.getGraph(investigationId);
+        CampaignReconstructionResponse campaign = campaignReconstructionService.reconstruct(investigationId);
 
         List<Map<String, Object>> evidenceData = evidence.stream().map(item -> {
             Map<String, Object> value = new LinkedHashMap<>();
@@ -110,6 +115,7 @@ public class InvestigationReportService {
         content.put("evidence", evidenceData);
         content.put("riskAssessment", risk);
         content.put("relationships", graph == null ? List.of() : graph.edges());
+        content.put("campaignReconstruction", campaign);
         content.put("limitations", List.of(
                 "Missing provider data is shown as unavailable and is not treated as clean.",
                 "Heuristic risk scoring is not a mathematically proven probability of fraud.",

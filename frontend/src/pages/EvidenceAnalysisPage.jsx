@@ -86,7 +86,7 @@ const EvidenceRow = ({ item, onRemove, removing }) => {
   return (
     <li className="flex items-start justify-between gap-3 px-5 sm:px-6 py-4.5 hover:bg-white/[0.04] transition-colors group">
       <div className="flex min-w-0 flex-1 items-start gap-3.5">
-        <div className="mt-0.5 shrink-0 rounded-xl border border-blue-500/25 bg-blue-500/10 p-2.5 text-blue-400 shadow-sm group-hover:scale-105 transition-transform">
+        <div className="mt-0.5 shrink-0 rounded-xl border border-cyan-500/25 bg-cyan-500/10 p-2.5 text-cyan-400 shadow-sm group-hover:scale-105 transition-transform">
           <Icon className="h-4 w-4" />
         </div>
         <div className="min-w-0 flex-1 space-y-1">
@@ -262,7 +262,7 @@ export const EvidenceAnalysisPage = () => {
   if (loading) {
     return (
       <div className="flex justify-center py-24 min-w-0">
-        <Spinner className="h-8 w-8 text-blue-400" label="Loading evidence workspace…" />
+        <Spinner className="h-8 w-8 text-cyan-400" label="Loading evidence workspace…" />
       </div>
     );
   }
@@ -389,9 +389,9 @@ export const EvidenceAnalysisPage = () => {
                       event.preventDefault();
                       selectFile(event.dataTransfer.files);
                     }}
-                    className="w-full rounded-2xl border-2 border-dashed border-white/[0.14] bg-[#090e1a]/90 p-7 text-center hover:border-blue-400/70 hover:bg-blue-500/[0.05] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 group shadow-inner"
+                    className="w-full rounded-2xl border-2 border-dashed border-white/[0.14] bg-[#090e1a]/90 p-7 text-center hover:border-cyan-400/70 hover:bg-cyan-500/[0.05] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 group shadow-inner"
                   >
-                    <div className="mx-auto mb-3 w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-400/25 flex items-center justify-center text-blue-400 group-hover:scale-105 transition-transform">
+                    <div className="mx-auto mb-3 w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-400/25 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform">
                       <Upload className="h-6 w-6" />
                     </div>
                     <span className="block text-xs sm:text-sm font-semibold text-slate-100">
@@ -435,7 +435,7 @@ export const EvidenceAnalysisPage = () => {
               {submitting && progress > 0 && (
                 <div className="h-2 overflow-hidden rounded-full bg-navy-800">
                   <div
-                    className="h-full bg-blue-500 transition-all duration-micro"
+                    className="h-full bg-cyan-500 transition-all duration-micro"
                     style={{ width: `${progress}%` }}
                   />
                 </div>

@@ -101,7 +101,7 @@ export const DashboardPage = () => {
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
             Welcome back,{' '}
-            <span className="bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-400 to-violet-300 bg-clip-text text-transparent">
               {user?.fullName?.split(' ')[0] || 'Analyst'}
             </span>
           </h1>
@@ -165,7 +165,7 @@ export const DashboardPage = () => {
           totalElements > 0 && (
             <Link
               to="/investigations"
-              className="text-xs font-semibold text-blue-400 hover:text-blue-300 inline-flex items-center gap-1 transition-colors group"
+              className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1 transition-colors group"
             >
               <span>View all cases</span>
               <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -196,7 +196,7 @@ export const DashboardPage = () => {
               >
                 <div className="min-w-0 flex-1 space-y-1">
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <p className="text-sm font-semibold text-slate-100 truncate group-hover:text-blue-300 transition-colors">
+                    <p className="text-sm font-semibold text-slate-100 truncate group-hover:text-cyan-300 transition-colors">
                       {inv.title}
                     </p>
                     {inv.category && <CategoryBadge category={inv.category} />}

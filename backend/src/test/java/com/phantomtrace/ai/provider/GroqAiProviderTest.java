@@ -30,8 +30,9 @@ class GroqAiProviderTest {
 
     @Test
     void parsesStructuredCompletionAndRejectsMalformedJson() throws Exception {
-        HttpServer server = HttpServer.create(new InetSocketAddress(0), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         server.createContext("/chat/completions", exchange -> {
+            exchange.getRequestBody().readAllBytes();
             byte[] body = "{\"model\":\"test-model\",\"choices\":[{\"message\":{\"content\":\"{}\"}}],\"usage\":{}}"
                     .getBytes();
             exchange.sendResponseHeaders(200, body.length);
@@ -49,8 +50,9 @@ class GroqAiProviderTest {
 
     @Test
     void mapsRateLimitAfterRetry() throws Exception {
-        HttpServer server = HttpServer.create(new InetSocketAddress(0), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         server.createContext("/chat/completions", exchange -> {
+            exchange.getRequestBody().readAllBytes();
             exchange.sendResponseHeaders(429, -1);
             exchange.close();
         });
@@ -66,7 +68,7 @@ class GroqAiProviderTest {
     private AIProviderConfig config(HttpServer server, int timeoutSeconds) {
         AIProviderConfig config = new AIProviderConfig();
         config.setApiKey("test-key");
-        config.setBaseUrl("http://localhost:" + server.getAddress().getPort());
+        config.setBaseUrl("http://127.0.0.1:" + server.getAddress().getPort());
         config.setTimeoutSeconds(timeoutSeconds);
         config.setModel("test-model");
         return config;

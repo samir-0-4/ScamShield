@@ -20,12 +20,12 @@ const NAV = [
 export const Sidebar = ({ onNavigate }) => (
   <div className="flex h-full flex-col bg-[#070b14] select-none">
     <div className="flex items-center gap-3 px-6 h-18 border-b border-white/[0.08] shrink-0">
-      <div className="p-2.5 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-400/30 text-blue-400 flex items-center justify-center shadow-[0_0_16px_rgba(59,130,246,0.25)]">
+      <div className="p-2.5 rounded-xl bg-gradient-to-br from-cyan-500/20 to-violet-500/20 border border-cyan-400/30 text-cyan-300 flex items-center justify-center shadow-[0_0_16px_rgba(0,201,200,0.2)]">
         <ShieldCheck className="w-5 h-5" />
       </div>
       <div>
         <span className="font-extrabold tracking-tight text-white text-base">
-          Phantom<span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">Trace</span>
+          Phantom<span className="bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">Trace</span>
         </span>
         <span className="block text-[9px] uppercase tracking-widest text-slate-400 font-semibold font-mono">
           Security Forensics
@@ -46,7 +46,7 @@ export const Sidebar = ({ onNavigate }) => (
             cn(
               'group relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150',
               isActive
-                ? 'bg-gradient-to-r from-blue-500/20 to-blue-500/5 text-white border border-blue-500/35 font-semibold shadow-[0_2px_12px_rgba(59,130,246,0.15)]'
+                ? 'bg-gradient-to-r from-cyan-500/20 to-violet-500/5 text-white border border-cyan-500/35 font-semibold shadow-[0_2px_12px_rgba(0,201,200,0.15)]'
                 : 'text-slate-400 hover:text-slate-100 hover:bg-white/[0.05] border border-transparent'
             )
           }
@@ -54,9 +54,9 @@ export const Sidebar = ({ onNavigate }) => (
           {({ isActive }) => (
             <>
               {isActive && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-blue-400 shadow-[0_0_8px_rgba(59,130,246,0.8)]" />
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full bg-cyan-400 shadow-[0_0_8px_rgba(59,130,246,0.8)]" />
               )}
-              <Icon className={cn('w-[18px] h-[18px] shrink-0 transition-colors', isActive ? 'text-blue-400' : 'text-slate-400 group-hover:text-slate-200')} />
+              <Icon className={cn('w-[18px] h-[18px] shrink-0 transition-colors', isActive ? 'text-cyan-400' : 'text-slate-400 group-hover:text-slate-200')} />
               <span className="truncate">{label}</span>
             </>
           )}

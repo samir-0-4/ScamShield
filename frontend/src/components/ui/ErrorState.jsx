@@ -17,7 +17,7 @@ export const ErrorState = ({
       )}
     >
       <div className="mx-auto w-12 h-12 rounded-xl bg-rose-500/15 border border-rose-500/35 flex items-center justify-center text-rose-400 shadow-sm">
-        <AlertTriangle className="w-5 h-5" />
+        <AlertTriangle className="w-5 h-5" aria-hidden="true" />
       </div>
       <div className="space-y-1">
         <h3 className="text-sm sm:text-base font-bold text-rose-200">{title}</h3>

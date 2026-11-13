@@ -91,7 +91,7 @@ export const SettingsPage = () => {
             >
               <div className="min-w-0">
                 <div className="flex items-center gap-2.5 font-bold text-slate-100">
-                  <div className="p-1.5 rounded-lg bg-blue-500/10 border border-blue-400/25 text-blue-400">
+                  <div className="p-1.5 rounded-lg bg-cyan-500/10 border border-cyan-400/25 text-cyan-400">
                     <Icon className="w-3.5 h-3.5 shrink-0" />
                   </div>
                   <span>{name}</span>

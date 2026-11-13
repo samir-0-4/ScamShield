@@ -16,6 +16,8 @@ import com.phantomtrace.service.CorrelationOrchestrator;
 import com.phantomtrace.dto.graph.InvestigationGraphResponse;
 import com.phantomtrace.dto.risk.RiskAssessmentResponse;
 import com.phantomtrace.service.RiskAssessmentService;
+import com.phantomtrace.dto.campaign.CampaignReconstructionResponse;
+import com.phantomtrace.service.CampaignReconstructionService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -45,15 +47,18 @@ public class InvestigationController {
     private final ObjectMapper objectMapper;
     private final CorrelationOrchestrator correlationOrchestrator;
     private final RiskAssessmentService riskAssessmentService;
+    private final CampaignReconstructionService campaignReconstructionService;
 
     public InvestigationController(InvestigationService investigationService,
             EvidenceService evidenceService, ObjectMapper objectMapper,
-            CorrelationOrchestrator correlationOrchestrator, RiskAssessmentService riskAssessmentService) {
+            CorrelationOrchestrator correlationOrchestrator, RiskAssessmentService riskAssessmentService,
+            CampaignReconstructionService campaignReconstructionService) {
         this.investigationService = investigationService;
         this.evidenceService = evidenceService;
         this.objectMapper = objectMapper;
         this.correlationOrchestrator = correlationOrchestrator;
         this.riskAssessmentService = riskAssessmentService;
+        this.campaignReconstructionService = campaignReconstructionService;
     }
 
     @PostMapping
@@ -142,5 +147,12 @@ public class InvestigationController {
     public ResponseEntity<ApiResponse<RiskAssessmentResponse>> getRiskAssessment(@PathVariable UUID id) {
         return ResponseEntity.ok(ApiResponse.success(
                 riskAssessmentService.latest(id), "Risk assessment retrieved successfully"));
+    }
+
+    @GetMapping("/{id}/campaign")
+    public ResponseEntity<ApiResponse<CampaignReconstructionResponse>> reconstructCampaign(@PathVariable UUID id) {
+        return ResponseEntity.ok(ApiResponse.success(
+                campaignReconstructionService.reconstruct(id),
+                "Campaign reconstruction retrieved successfully"));
     }
 }

@@ -2,6 +2,7 @@ package com.phantomtrace.service;
 
 import com.phantomtrace.dto.evidence.CreateEvidenceRequest;
 import com.phantomtrace.dto.evidence.EvidenceResponse;
+import com.phantomtrace.ai.agent.SecurityManager;
 import com.phantomtrace.entity.Evidence;
 import com.phantomtrace.entity.Investigation;
 import com.phantomtrace.enums.EvidenceType;
@@ -11,6 +12,7 @@ import com.phantomtrace.repository.InvestigationRepository;
 import com.phantomtrace.security.SecurityUtils;
 import com.phantomtrace.storage.FileStorageService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
@@ -35,6 +35,9 @@ import java.util.regex.Pattern;
 public class EvidenceServiceImpl implements EvidenceService {
 
     private static final long DEFAULT_MAX_FILE_SIZE = 25L * 1024 * 1024;
+    private static final int MAX_DESCRIPTION_LENGTH = 4_000;
+    private static final int MAX_TEXT_LENGTH = 1_000_000;
+    private static final int MAX_EMAIL_HEADERS_LENGTH = 64_000;
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
     private static final byte[] PDF_SIGNATURE = "%PDF-".getBytes(StandardCharsets.US_ASCII);
 
@@ -44,14 +47,17 @@ public class EvidenceServiceImpl implements EvidenceService {
     private final FileStorageService fileStorageService;
     private final DeterministicExtractionService deterministicExtractionService;
     private final FileEvidenceProcessingService fileEvidenceProcessingService;
+    private final SecurityManager securityManager;
     private final long maxFileSize;
 
+    @Autowired
     public EvidenceServiceImpl(EvidenceRepository evidenceRepository,
             InvestigationRepository investigationRepository,
             SecurityUtils securityUtils,
             FileStorageService fileStorageService,
             DeterministicExtractionService deterministicExtractionService,
             FileEvidenceProcessingService fileEvidenceProcessingService,
+            SecurityManager securityManager,
             @Value("${phantomtrace.storage.max-file-size-bytes:26214400}") long maxFileSize) {
         this.evidenceRepository = evidenceRepository;
         this.investigationRepository = investigationRepository;
@@ -59,7 +65,19 @@ public class EvidenceServiceImpl implements EvidenceService {
         this.fileStorageService = fileStorageService;
         this.deterministicExtractionService = deterministicExtractionService;
         this.fileEvidenceProcessingService = fileEvidenceProcessingService;
+        this.securityManager = securityManager;
         this.maxFileSize = maxFileSize > 0 ? maxFileSize : DEFAULT_MAX_FILE_SIZE;
+    }
+
+    public EvidenceServiceImpl(EvidenceRepository evidenceRepository,
+            InvestigationRepository investigationRepository,
+            SecurityUtils securityUtils,
+            FileStorageService fileStorageService,
+            DeterministicExtractionService deterministicExtractionService,
+            FileEvidenceProcessingService fileEvidenceProcessingService,
+            long maxFileSize) {
+        this(evidenceRepository, investigationRepository, securityUtils, fileStorageService,
+                deterministicExtractionService, fileEvidenceProcessingService, new SecurityManager(), maxFileSize);
     }
 
     @Override
@@ -159,8 +177,12 @@ public class EvidenceServiceImpl implements EvidenceService {
         if (request == null || request.evidenceType() == null) {
             throw new ApiException("Evidence type is required");
         }
+        maxLength(request.description(), MAX_DESCRIPTION_LENGTH, "Description");
         switch (request.evidenceType()) {
-            case TEXT_MESSAGE -> require(request.textContent(), "Message content is required");
+            case TEXT_MESSAGE -> {
+                require(request.textContent(), "Message content is required");
+                maxLength(request.textContent(), MAX_TEXT_LENGTH, "Message content");
+            }
             case URL -> {
                 require(request.url(), "URL is required");
                 validateUrl(request.url());
@@ -169,6 +191,9 @@ public class EvidenceServiceImpl implements EvidenceService {
                 require(request.senderAddress(), "Sender address is required");
                 require(request.subject(), "Email subject is required");
                 require(request.emailBody(), "Email body is required");
+                maxLength(request.subject(), MAX_DESCRIPTION_LENGTH, "Email subject");
+                maxLength(request.emailBody(), MAX_TEXT_LENGTH, "Email body");
+                maxLength(request.emailHeaders(), MAX_EMAIL_HEADERS_LENGTH, "Email headers");
                 if (!EMAIL_PATTERN.matcher(request.senderAddress()).matches()) {
                     throw new ApiException("Sender address is invalid");
                 }
@@ -228,15 +253,7 @@ public class EvidenceServiceImpl implements EvidenceService {
     }
 
     private void validateUrl(String value) {
-        try {
-            URI uri = new URI(value);
-            if (!List.of("http", "https").contains(uri.getScheme().toLowerCase(Locale.ROOT))
-                    || uri.getHost() == null) {
-                throw new ApiException("URL must be a valid HTTP or HTTPS address");
-            }
-        } catch (URISyntaxException | NullPointerException ex) {
-            throw new ApiException("URL must be a valid HTTP or HTTPS address");
-        }
+        securityManager.validateUrl(value);
     }
 
     private void rejectDuplicate(UUID investigationId, String contentHash) {
@@ -286,6 +303,12 @@ public class EvidenceServiceImpl implements EvidenceService {
     private void require(String value, String message) {
         if (value == null || value.isBlank()) {
             throw new ApiException(message);
+        }
+    }
+
+    private void maxLength(String value, int maximum, String field) {
+        if (value != null && value.length() > maximum) {
+            throw new ApiException(field + " exceeds the maximum allowed length");
         }
     }
 

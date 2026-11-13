@@ -5,6 +5,7 @@ import {
   FileSearch,
   FileText,
   GitBranch,
+  Network,
   ShieldCheck,
   Trash2,
   Calendar,
@@ -124,7 +125,7 @@ export const InvestigationDetailsPage = () => {
         <div className="flex flex-wrap items-center gap-2.5 shrink-0">
           <Link to={`/investigations/${id}/analysis`}>
             <Button variant="secondary" size="sm" className="inline-flex items-center gap-2 font-semibold shadow-sm">
-              <FileSearch className="w-4 h-4 text-blue-400" />
+              <FileSearch className="w-4 h-4 text-cyan-400" />
               <span>Add Evidence</span>
             </Button>
           </Link>
@@ -138,6 +139,12 @@ export const InvestigationDetailsPage = () => {
             <Button variant="outline" size="sm" className="inline-flex items-center gap-2 font-medium">
               <GitBranch className="w-4 h-4" />
               <span>Graph</span>
+            </Button>
+          </Link>
+          <Link to={`/investigations/${id}/campaign`}>
+            <Button variant="outline" size="sm" className="inline-flex items-center gap-2 font-medium text-cyan-300 hover:text-cyan-200">
+              <Network className="w-4 h-4 text-cyan-400" />
+              <span>Campaign</span>
             </Button>
           </Link>
           <Link to={`/investigations/${id}/report`}>
@@ -182,7 +189,7 @@ export const InvestigationDetailsPage = () => {
           >
             {evidenceLoading ? (
               <div className="flex justify-center py-8">
-                <Spinner className="h-6 w-6 text-blue-400" label="Loading evidence…" />
+                <Spinner className="h-6 w-6 text-cyan-400" label="Loading evidence…" />
               </div>
             ) : evidenceError ? (
               <p role="alert" className="py-4 text-xs sm:text-sm text-rose-300 font-medium">
@@ -219,7 +226,7 @@ export const InvestigationDetailsPage = () => {
                       key={item.id}
                       className="flex items-start gap-3.5 px-5 sm:px-6 py-4.5 hover:bg-white/[0.04] transition-all duration-150 group"
                     >
-                      <div className="mt-0.5 rounded-xl border border-blue-500/25 bg-blue-500/10 p-2.5 text-blue-400 shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+                      <div className="mt-0.5 rounded-xl border border-cyan-500/25 bg-cyan-500/10 p-2.5 text-cyan-400 shrink-0 shadow-sm group-hover:scale-105 transition-transform">
                         <Icon className="h-4 w-4" />
                       </div>
                       <div className="min-w-0 flex-1 space-y-1">

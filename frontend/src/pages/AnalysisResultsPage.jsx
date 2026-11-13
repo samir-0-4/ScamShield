@@ -92,7 +92,7 @@ const FindingCard = ({ finding }) => (
     <div className="border-t border-white/[0.08] pt-3 text-xs sm:text-sm space-y-2">
       <p className="text-slate-300 leading-relaxed">{finding.explanation}</p>
       {finding.recommendedAction && (
-        <p className="text-blue-300 font-semibold bg-blue-500/10 p-2.5 rounded-xl border border-blue-500/25">
+        <p className="text-cyan-300 font-semibold bg-cyan-500/10 p-2.5 rounded-xl border border-cyan-500/25">
           <span className="text-slate-400 font-normal">Recommended action:</span>{' '}
           {finding.recommendedAction}
         </p>
@@ -302,10 +302,10 @@ export const AnalysisResultsPage = () => {
       )}
       {processing && (
         <div
-          className="rounded-2xl border border-blue-500/30 bg-blue-500/10 p-4 text-xs sm:text-sm text-blue-300 shadow-sm flex items-center gap-3"
+          className="rounded-2xl border border-cyan-500/30 bg-cyan-500/10 p-4 text-xs sm:text-sm text-cyan-300 shadow-sm flex items-center gap-3"
           role="status"
         >
-          <div className="w-2.5 h-2.5 rounded-full bg-blue-400 animate-ping" />
+          <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
           <span>Analysis is processing. No progress estimate is shown because the backend does not provide one.</span>
         </div>
       )}
@@ -353,7 +353,7 @@ export const AnalysisResultsPage = () => {
                 >
                   <div className="flex justify-between items-center gap-3 text-xs sm:text-sm">
                     <span className="text-slate-100 font-medium">{signal.signal}</span>
-                    <span className="text-blue-400 font-mono font-extrabold">+{signal.weight}</span>
+                    <span className="text-cyan-400 font-mono font-extrabold">+{signal.weight}</span>
                   </div>
                   <p className="text-2xs text-slate-400 font-mono">
                     {signal.explanation} · Evidence: {signal.evidenceReferences}
@@ -422,7 +422,7 @@ export const AnalysisResultsPage = () => {
                 <div key={item.id} className="rounded-2xl border border-white/[0.08] bg-[#090e1a] p-4.5 space-y-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3 min-w-0">
-                      <Icon className="mt-0.5 h-4 w-4 text-blue-400 shrink-0" />
+                      <Icon className="mt-0.5 h-4 w-4 text-cyan-400 shrink-0" />
                       <div className="min-w-0">
                         <p className="font-semibold text-slate-100 text-xs sm:text-sm">
                           {titleCase(item.evidenceType)}
@@ -499,7 +499,7 @@ export const AnalysisResultsPage = () => {
                 key={action}
                 className="flex items-start gap-3.5 text-xs sm:text-sm text-slate-200 bg-[#090e1a] p-4 rounded-2xl border border-white/[0.08] shadow-sm"
               >
-                <ShieldAlert className="h-4 w-4 shrink-0 text-blue-400 mt-0.5" />
+                <ShieldAlert className="h-4 w-4 shrink-0 text-cyan-400 mt-0.5" />
                 <span className="leading-relaxed">{action}</span>
               </li>
             ))}

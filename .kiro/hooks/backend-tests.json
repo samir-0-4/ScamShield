@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "backend-tests-on-stop",
+      "description": "Run backend tests before stopping a Kiro session.",
+      "trigger": "Stop",
+      "action": {
+        "type": "command",
+        "command": "cd backend && mvn test"
+      },
+      "timeout": 300
+    }
+  ]
+}

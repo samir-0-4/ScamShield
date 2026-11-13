@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "frontend-build-on-stop",
+      "description": "Build the frontend before stopping a Kiro session.",
+      "trigger": "Stop",
+      "action": {
+        "type": "command",
+        "command": "cd frontend && npm run build"
+      },
+      "timeout": 180
+    }
+  ]
+}

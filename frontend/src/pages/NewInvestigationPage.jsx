@@ -80,7 +80,7 @@ export const NewInvestigationPage = () => {
           <span>Back to investigations</span>
         </Link>
         <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-400/30 text-blue-400 shadow-[0_0_16px_rgba(59,130,246,0.2)]">
+          <div className="p-2 rounded-xl bg-cyan-500/10 border border-cyan-400/30 text-cyan-400 shadow-[0_0_16px_rgba(59,130,246,0.2)]">
             <PlusCircle className="w-6 h-6" />
           </div>
           <span>New Investigation</span>
@@ -121,8 +121,8 @@ export const NewInvestigationPage = () => {
                 error={errors.category}
               />
               {fields.category && categoryDescriptions[fields.category] && (
-                <div className="p-3 rounded-xl bg-blue-500/[0.08] border border-blue-500/25 text-2xs text-blue-300 font-mono mt-2 shadow-sm">
-                  <span className="font-bold uppercase tracking-wider text-blue-400">Scope:</span>{' '}
+                <div className="p-3 rounded-xl bg-cyan-500/[0.08] border border-cyan-500/25 text-2xs text-cyan-300 font-mono mt-2 shadow-sm">
+                  <span className="font-bold uppercase tracking-wider text-cyan-400">Scope:</span>{' '}
                   {categoryDescriptions[fields.category]}
                 </div>
               )}
@@ -152,7 +152,7 @@ export const NewInvestigationPage = () => {
           <Card title="Investigation Protocol" className="shadow-card">
             <div className="space-y-3.5 text-xs text-slate-400 leading-relaxed">
               <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-                <Shield className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                <Shield className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
                 <p>
                   Cases start in <strong className="text-white">DRAFT</strong> status until
                   evidence items are submitted.

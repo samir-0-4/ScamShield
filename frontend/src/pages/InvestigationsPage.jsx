@@ -191,7 +191,7 @@ export const InvestigationsPage = () => {
               >
                 <div className="min-w-0 flex-1 space-y-1.5">
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <p className="text-sm sm:text-base font-semibold text-slate-100 truncate group-hover:text-blue-300 transition-colors">
+                    <p className="text-sm sm:text-base font-semibold text-slate-100 truncate group-hover:text-cyan-300 transition-colors">
                       {inv.title}
                     </p>
                     {inv.category && <CategoryBadge category={inv.category} />}

@@ -55,7 +55,7 @@ export const RegisterPage = () => {
   return (
     <div className="max-w-md mx-auto pt-6 sm:pt-14 min-w-0">
       <div className="mb-7 space-y-2.5 select-none text-left">
-        <div className="inline-flex p-3 rounded-2xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-400/30 text-blue-400 mb-1 shadow-[0_0_20px_rgba(59,130,246,0.25)]">
+        <div className="inline-flex p-3 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-violet-500/20 border border-cyan-400/30 text-cyan-400 mb-1 shadow-[0_0_20px_rgba(59,130,246,0.25)]">
           <UserPlus className="w-6 h-6" />
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Create Account</h1>
@@ -116,7 +116,7 @@ export const RegisterPage = () => {
         </form>
         <div className="mt-6 pt-4 border-t border-white/[0.08] text-left text-xs text-slate-400 flex items-center justify-between">
           <span>Already registered?</span>
-          <Link to="/login" className="text-blue-400 hover:text-blue-300 font-semibold transition-colors">
+          <Link to="/login" className="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">
             Sign In &rarr;
           </Link>
         </div>

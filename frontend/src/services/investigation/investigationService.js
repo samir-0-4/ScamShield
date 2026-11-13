@@ -41,6 +41,11 @@ export const investigationService = {
     return res.data;
   },
 
+  getCampaign: async (id) => {
+    const res = await apiClient.get(`${BASE}/${id}/campaign`);
+    return res.data;
+  },
+
   generateGraph: async (id) => {
     const res = await apiClient.post(`${BASE}/${id}/graph/generate`);
     return res.data;

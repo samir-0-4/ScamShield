@@ -16,4 +16,5 @@ phantomtrace:
     jwt:
       secret: test-secret-key-at-least-32-characters-long-for-hmac256
       expiration-ms: 86400000
-
+    rate-limit:
+      enabled: false

@@ -43,7 +43,7 @@ public class GroqAiProvider implements AiProvider {
                         .body(request).retrieve().body(String.class);
                 return parse(body);
             } catch (ResourceAccessException ex) {
-                return failure(AiProviderResult.Status.TIMEOUT, "AI provider request timed out");
+                return failure(AiProviderResult.Status.TIMEOUT, "AI provider request timed out: " + ex.getMessage());
             } catch (RestClientResponseException ex) {
                 if (ex.getStatusCode().value() == 401 || ex.getStatusCode().value() == 403) {
                     return failure(AiProviderResult.Status.AUTHENTICATION_ERROR, "AI provider credentials were rejected");

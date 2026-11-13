@@ -3,7 +3,7 @@ import { cn } from '../../utils/cn';
 export const Spinner = ({ className = '', label }) => (
   <span className={cn('inline-flex items-center gap-2.5', className)} role="status" aria-live="polite">
     <svg
-      className={cn('animate-spin', className || 'w-5 h-5 text-blue-400')}
+      className={cn('animate-spin', className || 'w-5 h-5 text-cyan-400')}
       viewBox="0 0 24 24"
       fill="none"
       aria-hidden="true"
@@ -20,10 +20,10 @@ export const Spinner = ({ className = '', label }) => (
 );
 
 export const FullPageSpinner = ({ label = 'Loading…' }) => (
-  <div className="flex flex-col items-center justify-center py-24 space-y-4">
+  <div className="flex min-h-[18rem] flex-col items-center justify-center py-24 space-y-4" aria-label={label}>
     <div className="relative flex items-center justify-center">
-      <div className="absolute w-12 h-12 rounded-full bg-blue-500/20 blur-md animate-pulse" />
-      <Spinner className="w-8 h-8 text-blue-400" />
+      <div className="absolute w-12 h-12 rounded-full bg-cyan-500/20 blur-md animate-pulse" />
+      <Spinner className="w-8 h-8 text-cyan-400" />
     </div>
     <p className="text-xs sm:text-sm text-slate-400 font-mono tracking-wide">{label}</p>
   </div>

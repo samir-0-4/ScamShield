@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "frontend-lint-on-save",
+      "description": "Lint changed frontend JavaScript and JSX files after saving.",
+      "trigger": "PostFileSave",
+      "matcher": "^frontend/src/.*\\.(js|jsx)$",
+      "action": {
+        "type": "command",
+        "command": "cd frontend && npm run lint -- --no-warn-ignored"
+      },
+      "timeout": 120
+    }
+  ]
+}
