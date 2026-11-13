@@ -26,15 +26,15 @@ PhantomTrace is architected for dual-environment workflows, operating seamlessly
 
 ---
 
-## 3. Kiro Task Breakdown
+## 3. Implemented Kiro Specifications
 
-- **Planned Structure**: As hackathon development progresses, feature-specific execution checklists will be documented under `.kiro/specs/` to allow step-by-step progress tracking:
-  - `01-auth-and-user-profile.md`
-  - `02-evidence-ingestion.md`
-  - `03-threat-intel-adapters.md`
-  - `04-groq-agents-orchestration.md`
-  - `05-react-flow-graph.md`
-  - `06-investigation-reporting.md`
+Feature work was organized as reviewed Kiro specs under `.kiro/specs/`, including:
+`frontend-foundation`, `evidence-submission`, `deterministic-evidence-extraction`,
+`threat-intelligence-integration`, `ai-analysis-agents`, `evidence-correlation`,
+`risk-assessment`, `investigation-results`, `evidence-relationship-graph`,
+`investigation-reports`, and `hackathon-final-delivery`.
+
+Each feature spec contains requirements, design, and task breakdown documents.
 
 ---
 
@@ -55,5 +55,7 @@ PhantomTrace is architected for dual-environment workflows, operating seamlessly
   - Ensuring AI agent prompts strictly preserve epistemic integrity.
   - Reviewing VirusTotal and URLhaus API integration schemas.
 
-*(Note: These templates are initialized as scaffolding for the hackathon and will be iteratively enhanced as feature modules are implemented.)*
-
+The custom agent and hook are repository artifacts. This project does not claim
+that a hook or custom agent was invoked for every change; the durable evidence of
+Kiro usage is the checked-in steering file, specs, task breakdowns, and hook/agent
+definitions above.

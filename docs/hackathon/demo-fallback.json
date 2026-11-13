@@ -1,0 +1,28 @@
+{
+  "fixtureType": "PRESENTATION_ONLY_PRECOMPUTED_DEMO_DATASET",
+  "live": false,
+  "warning": "Never display this fixture as a live investigation or use it to replace API responses.",
+  "investigation": {
+    "title": "Remote Job Offer Investigation",
+    "category": "JOB_SCAM",
+    "evidenceCount": 2
+  },
+  "evidence": [
+    {
+      "type": "TEXT_MESSAGE",
+      "description": "Synthetic job-offer message with registration fee and two-hour deadline",
+      "indicators": ["PAYMENT_TERM: registration fee", "URGENCY: two hours", "URL mention"]
+    },
+    {
+      "type": "URL",
+      "value": "https://demo.invalid/employee-verification",
+      "description": "Reserved controlled test domain; do not visit"
+    }
+  ],
+  "expectedStates": {
+    "externalIntelligence": "UNAVAILABLE_OR_NOT_CONFIGURED",
+    "aiAnalysis": "OPTIONAL_UNAVAILABLE",
+    "riskCategory": "HIGH",
+    "graph": "DETERMINISTIC_RELATIONSHIPS_ONLY"
+  }
+}

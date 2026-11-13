@@ -1,0 +1,14 @@
+{
+  "specId": "project-verification",
+  "phase": 1,
+  "status": "AWAITING_APPROVAL",
+  "tasks": [
+    { "id": "T1", "name": "Surefire Plugin Configuration", "status": "PENDING" },
+    { "id": "T2", "name": "Port Alignment in Config Fallbacks", "status": "PENDING" },
+    { "id": "T3", "name": "Verify Monorepo Script", "status": "PENDING" },
+    { "id": "T4", "name": "Execute Test Suites", "status": "PENDING" },
+    { "id": "T5", "name": "End-to-End Startup & Health Verification", "status": "PENDING" },
+    { "id": "T6", "name": "Status & Spec Completion Report", "status": "PENDING" }
+  ]
+}
+

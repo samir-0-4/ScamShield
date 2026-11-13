@@ -1,0 +1,240 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "A1. Add `io.jsonwebtoken:jjwt-api`, `jjwt-impl`, `jjwt-jackson` (pinned `0.12.6`) to `backend/pom.xml`.": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775220
+      },
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251787273
+      },
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251847117
+      }
+    ],
+    "A2. Create `backend/src/main/resources/db/migration/V1__init_schema.sql` (extensions + `users` table + index).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775315
+      },
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251854395
+      },
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251888907
+      }
+    ],
+    "A3. Verify dev-profile startup against PostgreSQL runs Flyway and boots with `ddl-auto=validate`.": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775363
+      },
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251895746
+      }
+    ],
+    "B1. Create `UserRole` enum (`ROLE_ANALYST`, `ROLE_ADMIN`) in `com.phantomtrace.enums`.": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775394
+      }
+    ],
+    "B2. Create `User` JPA entity in `com.phantomtrace.entity` (UUID id, unique email, passwordHash, fullName, role, audited timestamps).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775425
+      }
+    ],
+    "B3. Create `JpaAuditingConfig` (`@EnableJpaAuditing`) in `com.phantomtrace.config`.": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775474
+      }
+    ],
+    "B4. Create `UserRepository` in `com.phantomtrace.repository` (`existsByEmail`, `findByEmail`).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775500
+      }
+    ],
+    "C1. Create `RegisterRequest`, `LoginRequest` (records with `jakarta.validation` constraints).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775526
+      }
+    ],
+    "C2. Create `UserDto` record (no password field).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775592
+      }
+    ],
+    "C3. Create `AuthResponse` record (`{ token, user }`).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775621
+      }
+    ],
+    "D1. Create `JwtService` (generate, validate, parseClaims, secret-length `@PostConstruct` check).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775646
+      }
+    ],
+    "D2. Create `JwtAuthenticationFilter` (extends `OncePerRequestFilter`).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775673
+      }
+    ],
+    "D3. Modify `SecurityConfig`: add JWT filter, change `anyRequest().permitAll()` → `anyRequest().authenticated()`, keep health/auth/error public, keep CORS + PasswordEncoder bean.": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775700
+      }
+    ],
+    "D4. Create `SecurityUtils.getCurrentUserId()` (resolves authenticated principal; throws 401 if absent).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775727
+      }
+    ],
+    "E1. Create `AuthService` (`register`, `login`, `getCurrentUser`) with duplicate-email 409, uniform login-failure message, BCrypt encoding.": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775758
+      }
+    ],
+    "E2. Create `AuthController` (`POST /auth/register` 201, `POST /auth/login` 200, `GET /auth/me`), returning `ApiResponse<T>`.": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775784
+      }
+    ],
+    "F1. Create `DemoUserSeeder` (`CommandLineRunner`, `@Profile(\"dev\")` + gated by `phantomtrace.demo.seed-enabled`).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775815
+      }
+    ],
+    "F2. Add `phantomtrace.demo.seed-enabled` / `phantomtrace.demo.seed-password` defaults to `application.yml`; document in `.env.example`.": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775843
+      }
+    ],
+    "G1. `JwtServiceTest` (generation, claims, expiry, invalid token, secret-length validation).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775874
+      }
+    ],
+    "G2. `AuthServiceTest` (Mockito: register success/duplicate, login success/wrong-password/unknown-email, encoding).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775901
+      }
+    ],
+    "G3. `AuthControllerIntegrationTest` (MockMvc: register 201/409/400, login 200/401, `/auth/me` 200/401, health public).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775928
+      }
+    ],
+    "G4. `JwtAuthenticationFilterTest` / `SecurityConfigTest` (valid token sets context; protected path 401 without token; health 200).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775953
+      }
+    ],
+    "G5. Run `mvn clean test` — all tests green.": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251775979
+      }
+    ],
+    "H1. Boot backend on dev profile against PostgreSQL; confirm Flyway V1 applied and app starts (no schema-drift errors).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251776006
+      }
+    ],
+    "H2. Manual curl checks against running backend for AC-1..AC-10.": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251776046
+      }
+    ],
+    "H3. Manual end-to-end: frontend `LoginPage` → `/dashboard` and `RegisterPage` → `/login` against the real backend.": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251776074
+      }
+    ],
+    "H4. Confirm `users.password_hash` in DB is a BCrypt `$2a$...` value (no plaintext).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251776100
+      }
+    ],
+    "I1. Update `docs/api/api-overview.md` auth section if any detail drifted (otherwise leave as-is).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251776127
+      }
+    ],
+    "I2. Update `.kiro/specs/auth-foundation/tasks.md` statuses and mark spec complete.": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251776153
+      }
+    ],
+    "I3. Produce the Phase 1 completion report (per master instruction §8).": [
+      {
+        "executionId": "30a3219c-d749-4707-af6e-5b8bd3a17e3e",
+        "chatSessionId": "sess_d4be774f-bd73-4dc3-b6aa-872ddae36002",
+        "timestamp": 1794251776181
+      }
+    ]
+  }
+}

@@ -1,0 +1,52 @@
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: PhantomTrace
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
+
+phantomtrace:
+  api:
+    version: v1
+  security:
+    jwt:
+      secret: ${JWT_SECRET:}
+      expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  ai:
+    api-key: ${GROQ_API_KEY:}
+    base-url: ${GROQ_BASE_URL:https://api.groq.com/openai/v1}
+    model: ${GROQ_DEFAULT_MODEL:llama-3.3-70b-versatile}
+    timeout-seconds: ${GROQ_TIMEOUT_SECONDS:30}
+    max-input-characters: ${GROQ_MAX_INPUT_CHARACTERS:24000}
+    max-output-tokens: ${GROQ_MAX_OUTPUT_TOKENS:1200}
+  threat-intel:
+    virustotal:
+      api-key: ${VIRUSTOTAL_API_KEY:}
+      base-url: https://www.virustotal.com/api/v3
+    urlhaus:
+      api-key: ${URLHAUS_API_KEY:}
+      base-url: https://urlhaus-api.abuse.ch/v1
+    cache-ttl: ${THREAT_INTEL_CACHE_TTL:PT1H}
+  risk:
+    verified-malicious-weight: ${RISK_VERIFIED_MALICIOUS_WEIGHT:40}
+    credential-otp-weight: ${RISK_CREDENTIAL_OTP_WEIGHT:25}
+    upfront-payment-weight: ${RISK_UPFRONT_PAYMENT_WEIGHT:20}
+    impersonation-weight: ${RISK_IMPERSONATION_WEIGHT:15}
+    urgency-weight: ${RISK_URGENCY_WEIGHT:10}
+    unusual-url-weight: ${RISK_UNUSUAL_URL_WEIGHT:10}
+  storage:
+    type: ${FILE_STORAGE_TYPE:local}
+    local:
+      upload-dir: ${FILE_STORAGE_UPLOAD_DIR:./uploads}
+    max-file-size-bytes: ${FILE_STORAGE_MAX_FILE_SIZE_BYTES:26214400}
+  demo:
+    seed-enabled: ${PHANTOMTRACE_DEMO_SEED_ENABLED:false}
+    seed-password: ${PHANTOMTRACE_DEMO_SEED_PASSWORD:PhantomTrace2026!}

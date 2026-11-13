@@ -14,9 +14,9 @@ export const Card = ({
   return (
     <div
       className={cn(
-        'rounded-xl border border-white/[0.08] bg-[#0e121b]/95 shadow-card min-w-0',
+        'rounded-2xl border border-white/[0.08] bg-[#0c101c]/90 backdrop-blur-xl shadow-[0_4px_24px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)] min-w-0 transition-all duration-200',
         interactive &&
-          'transition-all duration-150 ease-out hover:border-white/[0.16] hover:bg-[#121622] focus-within:border-white/[0.2]',
+          'hover:border-white/[0.18] hover:bg-[#101626] hover:shadow-[0_12px_36px_-6px_rgba(0,0,0,0.7),inset_0_1px_0_0_rgba(255,255,255,0.12)] focus-within:border-blue-500/50',
         className
       )}
       {...props}
@@ -40,7 +40,7 @@ export const Card = ({
       )}
       <div className={cn('min-w-0', padded && 'p-5 sm:p-6')}>{children}</div>
       {footer && (
-        <div className="border-t border-white/[0.07] px-5 sm:px-6 py-3.5 bg-black/25 rounded-b-xl">
+        <div className="border-t border-white/[0.07] px-5 sm:px-6 py-3.5 bg-black/30 rounded-b-2xl">
           {footer}
         </div>
       )}

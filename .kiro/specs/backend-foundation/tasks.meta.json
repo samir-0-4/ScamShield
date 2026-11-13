@@ -1,0 +1,23 @@
+{
+  "specId": "backend-foundation",
+  "phase": 2,
+  "status": "COMPLETE",
+  "tasks": [
+    { "id": "1.1", "name": "Flyway Migration V2", "status": "DONE" },
+    { "id": "1.2", "name": "Schema Validation", "status": "DONE" },
+    { "id": "2.1", "name": "Enums Creation and Updates", "status": "DONE" },
+    { "id": "2.2", "name": "Investigation and Evidence Entities", "status": "DONE" },
+    { "id": "2.3", "name": "Repositories", "status": "DONE" },
+    { "id": "3.1", "name": "DTO Records", "status": "DONE" },
+    { "id": "4.1", "name": "Service Interface", "status": "DONE" },
+    { "id": "4.2", "name": "Service Implementation and Ownership Enforcement", "status": "DONE" },
+    { "id": "5.1", "name": "Investigation Controller", "status": "DONE" },
+    { "id": "5.2", "name": "Exception Handling", "status": "DONE" },
+    { "id": "6.1", "name": "Service Unit Tests", "status": "DONE" },
+    { "id": "6.2", "name": "Controller Integration Tests", "status": "DONE" },
+    { "id": "6.3", "name": "Monorepo Test Run", "status": "DONE" },
+    { "id": "7.1", "name": "Documentation Updates", "status": "DONE" },
+    { "id": "7.2", "name": "Spec Completion Report", "status": "DONE" }
+  ]
+}
+
