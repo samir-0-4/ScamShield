@@ -12,10 +12,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Normalizes cloud provider database URLs (e.g. Render, Railway, Heroku) where DATABASE_URL
- * is provided in the format postgresql://user:pass@host:port/dbname or postgres://...
+ * Normalizes cloud provider database URLs (e.g. Render, Railway, Heroku) where
+ * DATABASE_URL
+ * is provided in the format postgresql://user:pass@host:port/dbname or
+ * postgres://...
  * into standard JDBC format required by Spring Boot and Flyway:
- * jdbc:postgresql://host:port/dbname along with spring.datasource.username and password.
+ * jdbc:postgresql://host:port/dbname along with spring.datasource.username and
+ * password.
  */
 public class DatabaseUrlEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
@@ -67,7 +70,8 @@ public class DatabaseUrlEnvironmentPostProcessor implements EnvironmentPostProce
                 }
 
                 log.info("Normalized Cloud DATABASE_URL to JDBC target: jdbc:postgresql://{}:{}/{}", host, port, path);
-                environment.getPropertySources().addFirst(new MapPropertySource("cloudDatabaseUrlProperties", additionalProps));
+                environment.getPropertySources()
+                        .addFirst(new MapPropertySource("cloudDatabaseUrlProperties", additionalProps));
             } catch (Exception e) {
                 log.warn("Failed to parse cloud DATABASE_URL as URI, keeping original URL: {}", e.getMessage());
             }

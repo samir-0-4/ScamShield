@@ -16,7 +16,8 @@ class DatabaseUrlEnvironmentPostProcessorTest {
     @DisplayName("Should convert postgresql URI with user, pass, host, port, db to JDBC properties")
     void testConvertPostgresqlUrl() {
         ConfigurableEnvironment env = new StandardEnvironment();
-        System.setProperty("DATABASE_URL", "postgresql://dbuser:supersecret@dpg-abc123-a.oregon-postgres.render.com:5432/phantomtrace_prod");
+        System.setProperty("DATABASE_URL",
+                "postgresql://dbuser:supersecret@dpg-abc123-a.oregon-postgres.render.com:5432/phantomtrace_prod");
 
         try {
             processor.postProcessEnvironment(env, new SpringApplication());
