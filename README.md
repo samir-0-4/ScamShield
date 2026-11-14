@@ -8,7 +8,7 @@
 [![React](https://img.shields.io/badge/React-18-blue.svg)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-6-purple.svg)](https://vitejs.dev/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue.svg)](https://www.postgresql.org/)
-[![Vercel Frontend](https://img.shields.io/badge/Vercel-Frontend%20Live-black.svg?logo=vercel)](https://frontend-eta-brown-50.vercel.app)
+[![Vercel Frontend](https://img.shields.io/badge/Vercel-Frontend%20Live-black.svg?logo=vercel)](https://phantomtrace04.vercel.app)
 [![Render Backend](https://img.shields.io/badge/Render-Backend%20Live-46E3B7.svg?logo=render)](https://phantomtrace-backend-vhxt.onrender.com/api/v1/health)
 [![Backend Tests](https://img.shields.io/badge/Backend%20Tests-191%2F191%20Passing-brightgreen.svg)]()
 [![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-32%2F32%20Passing-brightgreen.svg)]()
@@ -16,7 +16,7 @@
 [![Kiroween Category](https://img.shields.io/badge/Kiroween%202026-Frankenstein-red.svg)]()
 
 > 🌐 **Live Public Deployment:**
-> - **Frontend Application (Vercel):** [https://frontend-eta-brown-50.vercel.app](https://frontend-eta-brown-50.vercel.app)
+> - **Frontend Application (Vercel):** [https://phantomtrace04.vercel.app](https://phantomtrace04.vercel.app)
 > - **Backend REST API (Render):** [https://phantomtrace-backend-vhxt.onrender.com](https://phantomtrace-backend-vhxt.onrender.com)
 > - **Live Health Diagnostic:** [`https://phantomtrace-backend-vhxt.onrender.com/api/v1/health`](https://phantomtrace-backend-vhxt.onrender.com/api/v1/health)
 
@@ -396,7 +396,7 @@ Database & Infrastructure:
 
 ### Live Hosted Deployment
 The platform is deployed and fully operational for evaluation without local configuration:
-- **Web Application (Vercel):** [https://frontend-eta-brown-50.vercel.app](https://frontend-eta-brown-50.vercel.app)
+- **Web Application (Vercel):** [https://phantomtrace04.vercel.app](https://phantomtrace04.vercel.app)
 - **Backend API (Render):** [https://phantomtrace-backend-vhxt.onrender.com](https://phantomtrace-backend-vhxt.onrender.com)
 - **Health Check:** [`https://phantomtrace-backend-vhxt.onrender.com/api/v1/health`](https://phantomtrace-backend-vhxt.onrender.com/api/v1/health)
 
@@ -471,7 +471,7 @@ Open `http://localhost:5173` in your browser.
 | `FILE_STORAGE_UPLOAD_DIR` | — | `./uploads` | Uploaded evidence storage directory |
 
 > [!NOTE]
-> `GROQ_API_KEY`, `VIRUSTOTAL_API_KEY`, and `URLHAUS_API_KEY` are **optional**. When unconfigured, the application functions cleanly using deterministic extraction and heuristic risk scoring, explicitly marking threat lookups as `UNKNOWN` (never falsely claiming they are clean).
+> `GROQ_API_KEY`, `VIRUSTOTAL_API_KEY`, and `URLHAUS_API_KEY` are **optional**. When unconfigured, the application functions cleanly using deterministic extraction and heuristic risk scoring, explicitly marking threat lookups as `UNKNOWN` (never falsely claiming they are clean). When `GROQ_API_KEY` is omitted, no evidence text or extracted indicators are transmitted to Groq, keeping all analysis strictly local to the host.
 
 ### Frontend Configuration (`frontend/.env`)
 
@@ -510,6 +510,11 @@ cd frontend && npm test -- --run && npm run lint && npm run build
 ## Security Considerations
 
 - **Server-Side Request Forgery (SSRF) Protection:** The backend server never fetches arbitrary or untrusted URLs extracted from evidence. Outbound requests are strictly restricted to whitelisted external APIs (Groq, VirusTotal, URLhaus).
+- **Data Privacy & Third-Party Transmission Boundaries:**
+  - **Local Host Processing:** Raw binary uploads (PDFs, images) are stored locally in the server's configured storage directory (`./uploads` or `/tmp`) and are **never** transmitted to Groq, VirusTotal, or URLhaus. Document parsing (Apache PDFBox), image decoding (ZXing QR reader), OCR text extraction (Tess4J), regex indicator extraction, graph correlation, and heuristic risk scoring execute entirely locally on the Spring Boot backend.
+  - **Transmission to Groq (`api.groq.com`):** Only triggered on-demand when the user executes AI analysis (`POST /api/v1/evidence/{evidenceId}/analysis`). Transmits the full extracted textual representation of the evidence (SMS text, email body, subject line, sender address, email headers, PDF text extracts, or OCR screenshot transcripts bounded to 24,000 characters by `SecurityManager`) along with extracted deterministic indicators to Groq over HTTPS for LLM inference.
+  - **Transmission to VirusTotal & URLhaus:** Only triggered on-demand when the user executes threat lookups (`POST /api/v1/evidence/{evidenceId}/threat-lookups`). Transmits **only** the extracted URL string (Base64-encoded to VirusTotal; form-urlencoded to URLhaus). Neither service receives raw files, file hashes, email content, SMS text, OCR transcripts, IP addresses, or naked domain indicators.
+  - **Synthetic Fixture Interception:** RFC 2606 reserved domains (`.test`, `.invalid`, `.localhost`, `.example`) and RFC 5737 TEST-NET IP ranges are intercepted and short-circuited locally by `SyntheticIndicatorDetector`; they are never transmitted to external threat intelligence providers.
 - **No File Execution:** Uploaded files (PDFs, images) are inspected solely via memory-safe parsers (PDFBox, ZXing, Tess4J). Uploaded binaries are never executed.
 - **Strict Multi-Tenant Isolation (IDOR Prevention):** All queries enforce database-level or service-level tenant checks (`currentUserId`). Cross-investigation campaign queries are strictly constrained to the authenticated tenant.
 - **Rate Limiting:** In-memory Bucket4j token bucket limits registration, authentication, evidence ingestion, and external lookups per client IP address.
@@ -526,7 +531,14 @@ To preserve technical credibility under adversarial forensic scrutiny:
 1. **OCR Quality Dependencies:** Tess4J relies on image resolution and contrast. Low-resolution or heavily distorted screenshots can produce partial OCR extractions.
 2. **AI Inference Boundaries:** Findings generated by Groq LLM agents are explicitly marked `AI_INFERENCE`. They represent probabilistic analytical hypotheses and are never described as verified forensic facts. Epistemic badges (`VERIFIED`, `AI_INFERENCE`, `UNKNOWN`) strictly separate deterministic cryptographic and regex extractions from generative LLM reasoning. Furthermore, composite risk scores are explainable heuristic aggregations, not statistical probabilities.
 3. **External Threat Feed Quotas:** Live queries to VirusTotal and URLhaus are subject to external API rate limits. When limits are exceeded or credentials are not configured, indicators gracefully fall back to local heuristic analysis and are marked `UNKNOWN` (never falsely represented as clean).
-4. **External Evidence Processing:** Ingestion workflows transmit extracted indicators to external third-party APIs (Groq for AI analysis, VirusTotal and URLhaus for threat verification). While raw uploaded files are stored within the configured storage backend, organizations handling legally privileged, classified, or sensitive internal data should review indicator transmission policies or host local LLM/threat intelligence instances.
+4. **External Evidence Processing & Sensitive Data Guidance:**
+   - **What Groq Receives:** When AI analysis is invoked (`POST /api/v1/evidence/{id}/analysis`), Groq receives the **full extracted textual content** of the evidence—including message text, email subject/body/headers, PDF text extractions, and OCR image transcripts (bounded to 24,000 characters by `SecurityManager`), alongside extracted indicators. While raw binary files remain on the local server, **all text extracted from evidence is transmitted externally to Groq** over HTTPS.
+   - **What VirusTotal & URLhaus Receive:** Threat intelligence lookups send **only** extracted URL strings to VirusTotal and URLhaus. They do **not** receive raw files, file hashes, text content, email bodies, headers, OCR transcripts, or IP addresses.
+   - **Sensitive Evidence Guidance:** Users and organizations investigating sensitive incidents should **avoid uploading or triggering AI analysis on**:
+     - Unredacted Personally Identifiable Information (PII) or Protected Health Information (PHI) unless cleared for third-party cloud processing.
+     - Classified, export-controlled, or legally privileged internal communications.
+     - Production credentials, private encryption keys, or proprietary internal source code.
+     To maintain strict data confidentiality, investigators can omit `GROQ_API_KEY` from the backend configuration; PhantomTrace will continue to perform full local deterministic indicator extraction and heuristic risk scoring without transmitting any evidence text externally.
 5. **Prompt Injection Susceptibility:** AI forensic agents analyze untrusted user-submitted text from phishing emails, SMS messages, and OCR transcripts. While strict prompt isolation instructions and typed JSON schema validation constrain agent outputs, adversarial prompt injection payloads embedded in evidence text could attempt to manipulate AI reasoning. PhantomTrace strictly isolates deterministic regex extractions and external threat feed results from LLM inference to safeguard factual ground truth.
 6. **JWT Storage in Browser LocalStorage:** The Single-Page Application (SPA) frontend stores authentication JWT tokens in browser `localStorage`. While standard for lightweight SPA architectures, this storage model is susceptible to token exfiltration if Cross-Site Scripting (XSS) occurs. Production enterprise deployments should transition to `HttpOnly` Secure SameSite cookies with CSRF token protection.
 7. **In-Memory Rate Limiting:** The Bucket4j token bucket rate limiter maintains IP request counters in local JVM heap memory. While effective for single-instance deployments, rate limit states reset when the service restarts and do not synchronize across horizontally scaled multi-node clusters without an external distributed store like Redis.
