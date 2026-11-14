@@ -2,6 +2,7 @@
 
 > **Investigate entire scam campaigns — not just individual URLs.**
 
+[![PhantomTrace CI](https://github.com/samir-0-4/Phantom-Trace/actions/workflows/ci.yml/badge.svg)](https://github.com/samir-0-4/Phantom-Trace/actions/workflows/ci.yml)
 [![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.2-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![React](https://img.shields.io/badge/React-18-blue.svg)](https://react.dev/)
@@ -21,6 +22,15 @@
 
 ---
 
+## Demo & Screenshots
+
+[Watch PhantomTrace Demo](YOUTUBE_VIDEO_URL)
+
+### Interactive Evidence Relationship Graph
+![PhantomTrace Campaign Reconstruction Graph](docs/images/campaign-reconstruction.png)
+
+---
+
 ## Table of Contents
 
 1. [Problem Statement](#problem-statement)
@@ -33,7 +43,7 @@
 8. [Interactive Evidence Relationship Graph](#interactive-evidence-relationship-graph)
 9. [Transparent Risk Assessment Engine](#transparent-risk-assessment-engine)
 10. [Synthetic Demo Dataset System](#synthetic-demo-dataset-system)
-11. [Forensic Reporting & Chain of Custody](#forensic-reporting--chain-of-custody)
+11. [Forensic Reporting & Evidence Referencing](#forensic-reporting--evidence-referencing)
 12. [Complete REST API Reference](#complete-rest-api-reference)
 13. [Technology Stack](#technology-stack)
 14. [Installation & Setup](#installation--setup)
@@ -60,7 +70,7 @@ Security analysts, fraud responders, and individuals lack a unified platform tha
 
 ## Solution & Core Value Proposition
 
-**PhantomTrace** is an enterprise-grade, AI-assisted digital threat forensic investigation platform. It enables investigators to:
+**PhantomTrace** is an AI-assisted digital threat investigation platform. It enables investigators to:
 
 1. **Ingest Multi-Channel Evidence** — Securely store SMS alerts, emails (with headers), raw URLs, documents (PDF), and images (screenshots, QR codes) within an isolated investigation dossier.
 2. **Deterministic Extraction First** — Extract indicators (URLs, domains, IPs, emails, phone numbers, urgency phrases, payment terms, OTP tokens) using strict RFC-compliant regex parsers without relying on non-deterministic LLMs.
@@ -68,7 +78,7 @@ Security analysts, fraud responders, and individuals lack a unified platform tha
 4. **Multi-Agent Forensic Reasoning** — Coordinate six specialized AI agents powered by Groq (LLaMA-3.3-70B) that produce structured JSON findings tagged with confidence scores and evidence references.
 5. **Reconstruct Attack Campaigns** — Uncover shared infrastructure across multiple independent investigations to prove campaign-level threat actor activity.
 6. **Transparent Heuristic Risk Scoring** — Calculate 0–100 risk scores with granular signal weights and independent confidence tracking.
-7. **Forensic Chain of Custody Reporting** — Generate immutable case snapshots with epistemic badges (`VERIFIED`, `AI_INFERENCE`, `UNKNOWN`) ready for print or PDF export.
+7. **Persisted Forensic Reporting** — Generate persisted case dossiers with epistemic badges (`VERIFIED`, `AI_INFERENCE`, `UNKNOWN`) ready for print or PDF export.
 
 ---
 
@@ -83,7 +93,7 @@ Security analysts, fraud responders, and individuals lack a unified platform tha
 | **Attribution Honesty** | Claims "malicious campaign" from single hits | Classifies into `ISOLATED_INCIDENT`, `POSSIBLE`, `PROBABLE`, and `CONFIRMED` |
 | **AI Role** | Unstructured conversational chatbot | 6 specialized agents with typed JSON schemas and failure isolation |
 | **Risk Transparency** | Opaque proprietary risk score | Transparent itemized weights (e.g. Verified Threat +40, OTP Theft +25) |
-| **Audit & Compliance** | Ephemeral browser results | Immutable persisted report snapshots with formal Chain of Custody |
+| **Audit & Compliance** | Ephemeral browser results | Persisted report snapshots with evidence references and analyst metadata |
 
 ---
 
@@ -121,7 +131,7 @@ flowchart TD
    - **`POSSIBLE`**: Single indicator overlap or heuristic correlation observed across artifacts.
    - **`PROBABLE`**: Multiple distinct infrastructure indicators (e.g. domain, IP, sender identity) converge across independent investigations.
    - **`CONFIRMED`**: Real-world shared infrastructure verified as malicious by authoritative external threat intelligence feeds (e.g., active VirusTotal / URLhaus malicious listing).
-   - **`SYNTHETIC_DEMO_CAMPAIGN`**: Dedicated classification for demonstration test fixtures (RFC 2606 `.test` domains and RFC 5737 TEST-NET IPs like `198.51.100.42`). Synthetic fixtures **never** produce a real-world `CONFIRMED` campaign, maintaining 100% forensic defensibility.
+   - **`SYNTHETIC_DEMO_CAMPAIGN`**: Dedicated classification for demonstration test fixtures (RFC 2606 `.test` domains and RFC 5737 TEST-NET IPs like `198.51.100.42`). Synthetic fixtures **never** produce a real-world `CONFIRMED` campaign, ensuring synthetic fixtures are isolated from genuine campaign attribution.
 4. **Forensic Attribution Narrative:** Generates automated, human-readable explanations detailing exactly which infrastructure indicators connect the dossiers, how many cases are linked, and the chronological timeline.
 5. **Synthetic-to-Genuine Contamination Prevention:** Genuine investigations are strictly partitioned from synthetic demo test fixtures. If a genuine case shares an indicator with a synthetic demo case, the synthetic dossier is quarantined (`linkConfidence: SYNTHETIC_DEMO`), an explicit `SYNTHETIC_DEMO_ISOLATION` signal is recorded, and genuine attribution requires $\ge 2$ independent real-world indicators. Synthetic fixtures can never elevate, downgrade, or contaminate a genuine forensic classification.
 6. **RFC Standards Compliance & Threat Feed Safeguards:**
@@ -170,7 +180,7 @@ flowchart TD
 3. **`EmailDetectiveAgent`**: Analyzes sender addresses, display name spoofing, corporate impersonation tactics, and header inconsistencies.
 4. **`FileAnalystAgent`**: Evaluates document structures, embedded JavaScript markers in PDFs (via Apache PDFBox), OCR text extracts (via Tess4J), and QR code payloads (via ZXing).
 5. **`IntelligenceCorrelationAgent`**: Correlates multiple extracted indicators within an evidence artifact, detecting multi-vector attack patterns.
-6. **`InvestigationReportAgent`**: Synthesizes all agent outputs and deterministic findings into an executive summary, chronological incident timeline, and prioritized containment checklist.
+6. **`InvestigationReportAgent`**: Generates an executive summary, findings breakdown, recommended containment actions, and analytical limitations directly from supplied evidence and extracted indicators.
 
 ---
 
@@ -240,12 +250,15 @@ $$\text{Risk Score} = \min\left(100, \sum_{i} w_i \cdot \text{signal}_i\right)$$
 
 | Risk Signal | Base Weight | Epistemic Basis | Trigger Condition |
 |---|:---:|:---:|---|
-| **Verified Malicious Intel** | **+40** | `VERIFIED` | VirusTotal $\ge 5$ positives or URLhaus listed active malicious |
-| **Credential / OTP Theft** | **+25** | `VERIFIED` / `AI_INFERENCE` | Explicit solicitation of passwords, PINs, or one-time passcodes |
-| **Payment / Wire / Advance Fee** | **+20** | `VERIFIED` / `AI_INFERENCE` | Request for wire transfer, cryptocurrency, gift cards, or refunds |
-| **Impersonation / Spoofing** | **+15** | `AI_INFERENCE` | Display name mismatch or brand masquerading |
-| **Urgency & Coercion Pressure** | **+10** | `DETERMINISTIC` | Deadlines (e.g. "within 24 hours", "immediate account suspension") |
-| **Unusual URL / Path Obfuscation** | **+10** | `DETERMINISTIC` | IP in URL, suspicious TLD, high sub-domain depth, URL shortener |
+| **Verified Malicious Intel** | **+40** | `VERIFIED` | VirusTotal $\ge 1$ malicious engine detection or URLhaus listed active malicious (`query_status == "ok"`) |
+| **Credential / OTP Request** | **+25** | `VERIFIED` | Deterministic regex extraction of password, PIN, or OTP keywords (`CREDENTIAL_TERM`, `OTP_TERM`) |
+| **Payment / Wire / Fee Request** | **+20** | `VERIFIED` | Deterministic regex extraction of payment keywords (pay, payment, fee, transfer, deposit, registration/processing fee) |
+| **Impersonation / Spoofing Signal** | **+15** | `AI_INFERENCE` | Inferred brand masquerading or display name inconsistency |
+| **Urgency & Pressure Language** | **+10** | `VERIFIED` | Deterministic regex extraction of urgency keywords or deadline pressure phrases (`URGENCY_INDICATOR`) |
+| **Unusual URL / Path Obfuscation** | **+10** | `VERIFIED` | Deterministic regex matching IPv4 host, Punycode (`xn--`), or sensitive path terms (`/login`, `/verify`, `/payment`, `/secure`) |
+
+> [!NOTE]
+> **Epistemic Truth Standard in Risk Scoring:** Indicators matched by deterministic regex parsers or confirmed external lookups carry the epistemic status `VERIFIED` (verifiable string occurrence or external API record). Inferred motivations, psychological coercion scoring, and suspected target brand analysis produced by Groq LLM agents carry the epistemic status `AI_INFERENCE`. Unconfigured API keys, rate limits, or network timeouts carry `UNKNOWN`.
 
 ### Risk Severities:
 - **`LOW` (0–19):** Informational or benign characteristics.
@@ -265,21 +278,21 @@ To enable reliable, zero-configuration demonstrations during hackathon evaluatio
   2. `[DEMO] Apex Campaign — Spear-Phishing Email & KYC Lure` (Corporate email phish)
   3. `[DEMO] Apex Campaign — Vishing Follow-up & Fraud Refund Lure` (Voice transcript refund lure)
 - **Shared Synthetic Infrastructure:** All 3 cases converge on the domain `secure-netbanking-verify.internal-demo.test` and server IP `198.51.100.42` (RFC 5737 TEST-NET-2).
-- **Absolute Rule B Compliance:** All demo cases are prominently prefixed with `[DEMO]` and classified as `SYNTHETIC_DEMO_CAMPAIGN` with `SYNTHETIC DEMO` badges to ensure judges never mistake synthetic test fixtures for live production incidents. Synthetic fixtures receive zero real-world threat intelligence points.
+- **Synthetic Demo Isolation & Provenance:** All demo cases are prominently prefixed with `[DEMO]` and classified as `SYNTHETIC_DEMO_CAMPAIGN` with `SYNTHETIC DEMO` badges to ensure judges never mistake synthetic test fixtures for live production incidents. Synthetic fixtures receive zero real-world threat intelligence points.
 - **Persistent Provenance & Tenant Isolation (`V10__add_synthetic_demo_to_investigations.sql`):** Investigations track persistent `synthetic_demo` provenance at the database level with a compound index `(user_id, synthetic_demo)`. This guarantees synthetic demo artifacts can never be mixed with genuine casework.
 - **Idempotent Reset (`DELETE /api/v1/demo/reset`):** Safely cleans up demo dossiers strictly scoped to the authenticated user and `syntheticDemo = true`, ensuring genuine user investigations are never affected or deleted.
 
 ---
 
-## Forensic Reporting & Chain of Custody
+## Forensic Reporting & Evidence Referencing
 
-The **Investigation Report Service** produces immutable case snapshots designed for compliance audits, law enforcement referrals, or executive briefings:
+The **Investigation Report Service** produces persisted case report snapshots designed for investigative reviews, organizational incident records, or executive briefings:
 
 1. **Executive Dossier:** Case metadata, severity classification, and composite risk metrics.
 2. **Attribution Summary:** Campaign reconstruction narrative with connected cross-case links.
 3. **Structured Findings Catalog:** Every finding includes confidence score, evidence source reference, and recommended remediation.
-4. **Epistemic Standards Key:** Explicitly differentiates between hard deterministic facts and AI inferences.
-5. **Chain of Custody & Legal Sign-Off:** Formatted block documenting analyst identity, timestamp, SHA-256 verification, and formal sign-off lines.
+4. **Epistemic Standards Key:** Explicitly differentiates between hard deterministic facts, AI inferences, and unknown dimensions.
+5. **Forensic Report Metadata & Evidence References:** Formatted block documenting analyst identity, timestamp, evidence identifiers, and review sign-off lines.
 6. **Print & PDF Optimization:** Custom `@media print` CSS formats the dossier into a crisp forensic document via browser print (`Cmd/Ctrl + P`).
 
 ---
@@ -302,17 +315,19 @@ All application endpoints are versioned under `/api/v1` and return standard JSON
 ### 1. Authentication (`/api/v1/auth`)
 - `POST /api/v1/auth/register` — Create user account (`email`, `password`, `fullName`)
 - `POST /api/v1/auth/login` — Authenticate and receive 24-hour HS256 JWT
+- `GET /api/v1/auth/me` — Retrieve currently authenticated user profile
 
 ### 2. Investigation Dossiers (`/api/v1/investigations`)
-- `GET /api/v1/investigations` — List user's investigations
+- `GET /api/v1/investigations` — List user's investigations (supports optional status filter and pagination)
 - `POST /api/v1/investigations` — Create new dossier (`title`, `description`, `category`)
 - `GET /api/v1/investigations/{id}` — Retrieve dossier details
-- `PUT /api/v1/investigations/{id}` — Update title, description, category, or status
+- `PATCH /api/v1/investigations/{id}` — Update title, description, category, or status
 - `DELETE /api/v1/investigations/{id}` — Delete dossier (cascades to evidence and reports)
 
 ### 3. Evidence Management (`/api/v1/investigations/{id}/evidence` & `/api/v1/evidence`)
-- `POST /api/v1/investigations/{id}/evidence/text` — Ingest text message, email, or URL evidence
-- `POST /api/v1/investigations/{id}/evidence/file` — Ingest PDF, image, or document (multipart/form-data)
+- `POST /api/v1/investigations/{id}/evidence` (`application/json`) — Ingest text message, email, or URL evidence
+- `POST /api/v1/investigations/{id}/evidence` (`multipart/form-data`) — Ingest file evidence with `metadata` JSON and `file` parts
+- `GET /api/v1/investigations/{id}/evidence` — List evidence artifacts belonging to dossier
 - `GET /api/v1/evidence/{evidenceId}` — Get evidence metadata
 - `DELETE /api/v1/evidence/{evidenceId}` — Remove evidence artifact
 
@@ -327,6 +342,9 @@ All application endpoints are versioned under `/api/v1` and return standard JSON
 
 ### 6. Evidence Graph & Campaign Reconstruction
 - `GET /api/v1/investigations/{id}/graph` — Retrieve React Flow nodes and typed relationship edges
+- `POST /api/v1/investigations/{id}/graph/generate` — Generate or recalculate investigation relationship graph
+- `GET /api/v1/investigations/{id}/risk-assessment` — Retrieve latest risk assessment
+- `POST /api/v1/investigations/{id}/risk-assessment` — Generate on-demand risk assessment
 - `GET /api/v1/investigations/{id}/campaign` — Execute cross-investigation campaign reconstruction
 
 ### 7. Synthetic Demo Dataset (`/api/v1/demo`)
@@ -334,13 +352,13 @@ All application endpoints are versioned under `/api/v1` and return standard JSON
 - `DELETE /api/v1/demo/reset` — Remove demo cases belonging to authenticated user (strictly scoped to `syntheticDemo = true`)
 - `GET /api/v1/demo/status` — Check whether demo campaign is currently active
 
-### 8. Forensic Reports (`/api/v1/investigations/{id}/reports`)
-- `POST /api/v1/investigations/{id}/reports` — Compile and persist an immutable forensic snapshot
+### 8. Forensic Reports (`/api/v1/investigations/{id}/reports` & `/api/v1/reports`)
+- `POST /api/v1/investigations/{id}/reports` — Compile and persist a forensic report snapshot
 - `GET /api/v1/investigations/{id}/reports` — List past generated reports for dossier
-- `GET /api/v1/investigations/reports/{reportId}` — Retrieve specific report JSON
+- `GET /api/v1/reports/{reportId}` — Retrieve specific report JSON
 
 ### 9. System Health (`/api/v1/health`)
-- `GET /api/v1/health` — Service health check (`status: UP`, application name)
+- `GET /api/v1/health` — Service health check (`status: UP`, database status, provider API configuration flags)
 
 ---
 
@@ -390,7 +408,7 @@ The platform is deployed and fully operational for evaluation without local conf
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/samir-0-4/ScamShield.git phantomtrace
+git clone https://github.com/samir-0-4/Phantom-Trace.git phantomtrace
 cd phantomtrace
 ```
 
@@ -420,7 +438,7 @@ The backend initializes on `http://localhost:8080`. Flyway automatically execute
 *Verify health check:*
 ```bash
 curl http://localhost:8080/api/v1/health
-# {"success":true,"message":"PhantomTrace API is operational","data":{"status":"UP","application":"PhantomTrace"}}
+# {"status":"UP","application":"PhantomTrace","dbConnected":true,"groqConfigured":false,"virusTotalConfigured":false,"urlhausConfigured":false}
 ```
 
 ### 5. Start the Frontend Application
@@ -507,10 +525,15 @@ To preserve technical credibility under adversarial forensic scrutiny:
 
 1. **OCR Quality Dependencies:** Tess4J relies on image resolution and contrast. Low-resolution or heavily distorted screenshots can produce partial OCR extractions.
 2. **AI Inference Boundaries:** Findings generated by Groq LLM agents are explicitly marked `AI_INFERENCE`. They represent probabilistic analytical hypotheses and are never described as verified forensic facts. Epistemic badges (`VERIFIED`, `AI_INFERENCE`, `UNKNOWN`) strictly separate deterministic cryptographic and regex extractions from generative LLM reasoning. Furthermore, composite risk scores are explainable heuristic aggregations, not statistical probabilities.
-3. **External Threat Feed Quotas:** Live queries to VirusTotal and URLhaus are subject to external API rate limits. When limits are exceeded, indicators gracefully fall back to local heuristic analysis.
-4. **No Raw WHOIS / RDAP Queries:** Domain age, registrant names, and ASN details are not queried via raw sockets to maintain server isolation.
-5. **Local Storage Default:** File uploads default to local filesystem storage (`./uploads`). Production deployments should configure S3-compatible object storage.
-6. **IPv6 Indicator Extraction Pipeline:** The deterministic extraction pipeline (`DeterministicExtractionService`) currently targets IPv4 addresses (`IP_ADDRESS`). IPv6 indicators—including documentation ranges such as RFC 3849 (`2001:db8::/32`)—are not parsed by the regular expression pipeline. Synthetic indicator detection for RFC 5737 TEST-NET ranges strictly targets IPv4.
+3. **External Threat Feed Quotas:** Live queries to VirusTotal and URLhaus are subject to external API rate limits. When limits are exceeded or credentials are not configured, indicators gracefully fall back to local heuristic analysis and are marked `UNKNOWN` (never falsely represented as clean).
+4. **External Evidence Processing:** Ingestion workflows transmit extracted indicators to external third-party APIs (Groq for AI analysis, VirusTotal and URLhaus for threat verification). While raw uploaded files are stored within the configured storage backend, organizations handling legally privileged, classified, or sensitive internal data should review indicator transmission policies or host local LLM/threat intelligence instances.
+5. **Prompt Injection Susceptibility:** AI forensic agents analyze untrusted user-submitted text from phishing emails, SMS messages, and OCR transcripts. While strict prompt isolation instructions and typed JSON schema validation constrain agent outputs, adversarial prompt injection payloads embedded in evidence text could attempt to manipulate AI reasoning. PhantomTrace strictly isolates deterministic regex extractions and external threat feed results from LLM inference to safeguard factual ground truth.
+6. **JWT Storage in Browser LocalStorage:** The Single-Page Application (SPA) frontend stores authentication JWT tokens in browser `localStorage`. While standard for lightweight SPA architectures, this storage model is susceptible to token exfiltration if Cross-Site Scripting (XSS) occurs. Production enterprise deployments should transition to `HttpOnly` Secure SameSite cookies with CSRF token protection.
+7. **In-Memory Rate Limiting:** The Bucket4j token bucket rate limiter maintains IP request counters in local JVM heap memory. While effective for single-instance deployments, rate limit states reset when the service restarts and do not synchronize across horizontally scaled multi-node clusters without an external distributed store like Redis.
+8. **Render Free Ephemeral Filesystem Storage:** Uploaded files default to local filesystem storage (`/app/uploads` or `/tmp`). On containerized cloud platforms like Render's free tier without persistent disk mounts, uploaded files are ephemeral and reset during application redeployments or restarts. Production deployments must configure persistent cloud block storage or S3-compatible object storage.
+9. **Render Free PostgreSQL Retention Policy:** Render's free PostgreSQL tier imposes a 30-day database lifespan and connection limits, requiring periodic database renewal or migration to a persistent managed database tier for long-term historical records.
+10. **No Raw WHOIS / RDAP Queries:** Domain age, registrant names, and ASN details are not queried via raw sockets to maintain server isolation and prevent network egress exposure.
+11. **IPv6 Indicator Extraction Pipeline:** The deterministic extraction pipeline (`DeterministicExtractionService`) currently targets IPv4 addresses (`IP_ADDRESS`). IPv6 indicators—including documentation ranges such as RFC 3849 (`2001:db8::/32`)—are not parsed by the regular expression pipeline. Synthetic indicator detection for RFC 5737 TEST-NET ranges strictly targets IPv4.
 
 ---
 
