@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { FolderSearch, PlusCircle, Search, ChevronRight, X, Clock } from 'lucide-react';
+import { FolderSearch, PlusCircle, Search, ChevronRight, X, Clock, Sparkles, RotateCcw } from 'lucide-react';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
 import { StatusBadge, RiskBadge, CategoryBadge } from '../components/ui/StatusBadge';
@@ -39,19 +39,24 @@ export const InvestigationsPage = () => {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [seedingDemo, setSeedingDemo] = useState(false);
+  const [hasDemoData, setHasDemoData] = useState(false);
 
   const fetchPage = useCallback(
     (pageNum = 0, status = '') => {
       setLoading(true);
-      investigationService
-        .list({
+      Promise.all([
+        investigationService.list({
           page: pageNum,
           size: PAGE_SIZE,
           sort: 'createdAt,desc',
           status: status || undefined,
-        })
-        .then((res) => {
+        }),
+        Promise.resolve(investigationService.getDemoStatus?.()).catch(() => ({ hasDemoData: false })),
+      ])
+        .then(([res, demoStatus]) => {
           setPage(res);
+          setHasDemoData(Boolean(demoStatus?.hasDemoData));
           setError('');
         })
         .catch(() => setError('Failed to load investigations.'))
@@ -59,6 +64,30 @@ export const InvestigationsPage = () => {
     },
     []
   );
+
+  const handleSeedDemo = async () => {
+    setSeedingDemo(true);
+    try {
+      await investigationService.seedDemoCampaign();
+      fetchPage(0, statusFilter);
+    } catch {
+      setError('Failed to seed demo campaign.');
+    } finally {
+      setSeedingDemo(false);
+    }
+  };
+
+  const handleResetDemo = async () => {
+    setSeedingDemo(true);
+    try {
+      await investigationService.resetDemoCampaign();
+      fetchPage(0, statusFilter);
+    } catch {
+      setError('Failed to reset demo campaign.');
+    } finally {
+      setSeedingDemo(false);
+    }
+  };
 
   useEffect(() => {
     fetchPage(currentPage, statusFilter);
@@ -98,12 +127,37 @@ export const InvestigationsPage = () => {
             Active and archived digital threat cases across all vectors
           </p>
         </div>
-        <Link to="/investigations/new">
-          <Button className="flex items-center gap-2 font-semibold shadow-lg">
-            <PlusCircle className="w-4 h-4" />
-            <span>New Investigation</span>
-          </Button>
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          {hasDemoData ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleResetDemo}
+              loading={seedingDemo}
+              className="flex items-center gap-2 font-mono text-xs border-white/10 text-slate-300 hover:text-white"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Reset Demo</span>
+            </Button>
+          ) : (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleSeedDemo}
+              loading={seedingDemo}
+              className="flex items-center gap-2 font-semibold border-cyan-500/30 text-cyan-300 hover:bg-cyan-950/30 shadow-sm"
+            >
+              <Sparkles className="w-4 h-4 text-cyan-400" />
+              <span>Load Demo Campaign</span>
+            </Button>
+          )}
+          <Link to="/investigations/new">
+            <Button className="flex items-center gap-2 font-semibold shadow-lg">
+              <PlusCircle className="w-4 h-4" />
+              <span>New Investigation</span>
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -194,6 +248,11 @@ export const InvestigationsPage = () => {
                     <p className="text-sm sm:text-base font-semibold text-slate-100 truncate group-hover:text-cyan-300 transition-colors">
                       {inv.title}
                     </p>
+                    {inv.title?.startsWith('[DEMO]') && (
+                      <span className="font-mono text-[9px] uppercase px-2 py-0.5 rounded-full border border-purple-500/30 bg-purple-500/15 text-purple-300 font-bold tracking-wider">
+                        SYNTHETIC DEMO
+                      </span>
+                    )}
                     {inv.category && <CategoryBadge category={inv.category} />}
                   </div>
                   <div className="flex items-center gap-3 text-xs text-slate-400 font-mono">

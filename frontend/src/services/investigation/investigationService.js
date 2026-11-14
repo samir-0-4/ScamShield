@@ -75,6 +75,21 @@ export const investigationService = {
     const res = await apiClient.get(`/reports/${reportId}`);
     return res.data;
   },
+
+  seedDemoCampaign: async () => {
+    const res = await apiClient.post('/demo/seed');
+    return res.data;
+  },
+
+  resetDemoCampaign: async () => {
+    const res = await apiClient.delete('/demo/reset');
+    return res.data;
+  },
+
+  getDemoStatus: async () => {
+    const res = await apiClient.get('/demo/status');
+    return res.data;
+  },
 };
 
 export default investigationService;

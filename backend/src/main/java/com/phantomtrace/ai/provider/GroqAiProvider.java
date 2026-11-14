@@ -4,11 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phantomtrace.ai.config.AIProviderConfig;
 import com.phantomtrace.ai.dto.AiCompletionRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
+
+import java.net.SocketTimeoutException;
 
 @Component
 public class GroqAiProvider implements AiProvider {
@@ -16,14 +19,26 @@ public class GroqAiProvider implements AiProvider {
     private final ObjectMapper objectMapper;
     private final AIProviderConfig config;
 
+    @Autowired
     public GroqAiProvider(AIProviderConfig config, ObjectMapper objectMapper) {
+        this(config, objectMapper, createDefaultClient(config));
+    }
+
+    public GroqAiProvider(AIProviderConfig config, ObjectMapper objectMapper, RestClient client) {
         this.config = config;
         this.objectMapper = objectMapper;
+        this.client = client;
+    }
+
+    private static RestClient createDefaultClient(AIProviderConfig config) {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         int timeout = Math.max(1, config.getTimeoutSeconds()) * 1000;
         factory.setConnectTimeout(timeout);
         factory.setReadTimeout(timeout);
-        this.client = RestClient.builder().baseUrl(config.getBaseUrl()).requestFactory(factory).build();
+        String baseUrl = config.getBaseUrl() != null && !config.getBaseUrl().isBlank()
+                ? config.getBaseUrl()
+                : "https://api.groq.com/openai/v1";
+        return RestClient.builder().baseUrl(baseUrl).requestFactory(factory).build();
     }
 
     @Override
@@ -43,7 +58,12 @@ public class GroqAiProvider implements AiProvider {
                         .body(request).retrieve().body(String.class);
                 return parse(body);
             } catch (ResourceAccessException ex) {
-                return failure(AiProviderResult.Status.TIMEOUT, "AI provider request timed out: " + ex.getMessage());
+                boolean isTimeout = ex.getCause() instanceof SocketTimeoutException
+                        || (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("timed out"));
+                if (isTimeout) {
+                    return failure(AiProviderResult.Status.TIMEOUT, "AI provider request timed out: " + ex.getMessage());
+                }
+                return failure(AiProviderResult.Status.UNAVAILABLE, "AI provider is unavailable: " + ex.getMessage());
             } catch (RestClientResponseException ex) {
                 if (ex.getStatusCode().value() == 401 || ex.getStatusCode().value() == 403) {
                     return failure(AiProviderResult.Status.AUTHENTICATION_ERROR, "AI provider credentials were rejected");

@@ -109,13 +109,25 @@ public class InvestigationReportService {
         }).toList();
 
         Map<String, Object> content = new LinkedHashMap<>();
-        content.put("investigation", Map.of(
-                "id", investigation.getId(), "title", investigation.getTitle(),
-                "category", investigation.getCategory(), "createdAt", investigation.getCreatedAt()));
+        Map<String, Object> invMap = new LinkedHashMap<>();
+        invMap.put("id", investigation.getId());
+        invMap.put("title", investigation.getTitle());
+        invMap.put("category", investigation.getCategory());
+        invMap.put("description", investigation.getDescription());
+        invMap.put("status", investigation.getStatus());
+        invMap.put("overallRiskLevel", investigation.getOverallRiskLevel());
+        invMap.put("riskScore", investigation.getRiskScore());
+        invMap.put("createdAt", investigation.getCreatedAt());
+        content.put("investigation", invMap);
         content.put("evidence", evidenceData);
         content.put("riskAssessment", risk);
         content.put("relationships", graph == null ? List.of() : graph.edges());
         content.put("campaignReconstruction", campaign);
+        content.put("epistemicStandards", Map.of(
+                "VERIFIED", "Extracted deterministically via cryptographic hashing, verified AST/regex parsing, or positive external threat intelligence lookup.",
+                "AI_INFERENCE", "Generated hypothesis from LLM or heuristic analysis, requiring verification.",
+                "UNKNOWN", "Missing, unconfigured, or inconclusive information."
+        ));
         content.put("limitations", List.of(
                 "Missing provider data is shown as unavailable and is not treated as clean.",
                 "Heuristic risk scoring is not a mathematically proven probability of fraud.",

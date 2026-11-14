@@ -114,4 +114,62 @@ class CampaignReconstructionServiceTest {
         assertThat(response.campaignSignals().get(0).confidence()).isEqualTo("POSSIBLE");
         assertThat(response.campaignSignals().get(0).description()).contains("2 shared indicator(s)");
     }
+
+    @Test
+    void reconstructsCrossInvestigationCampaignSignals() {
+        when(securityUtils.getCurrentUserId()).thenReturn(userId);
+        when(investigationRepository.findById(investigationId)).thenReturn(Optional.of(investigation));
+
+        User user = new User("analyst@example.com", "hash", "Analyst", UserRole.ROLE_ANALYST);
+        ReflectionTestUtils.setField(user, "id", userId);
+
+        UUID secondInvId = UUID.randomUUID();
+        Investigation secondInv = new Investigation(user, "Phishing Attack Wave 2", "Context 2", InvestigationCategory.PHISHING);
+        ReflectionTestUtils.setField(secondInv, "id", secondInvId);
+
+        Evidence evidenceInSecondCase = new Evidence(secondInv, EvidenceType.EMAIL, "Phish email 2");
+        ReflectionTestUtils.setField(evidenceInSecondCase, "id", UUID.randomUUID());
+
+        ExtractedIndicator case1Ind = new ExtractedIndicator(evidence1, IndicatorType.DOMAIN, "evil-phish.net", "evil-phish.net", "REGEX", Instant.now());
+        ExtractedIndicator case2Ind = new ExtractedIndicator(evidenceInSecondCase, IndicatorType.DOMAIN, "evil-phish.net", "evil-phish.net", "REGEX", Instant.now());
+
+        when(indicatorRepository.findByEvidenceInvestigationId(investigationId)).thenReturn(List.of(case1Ind));
+        when(indicatorRepository.findByEvidenceInvestigationUserId(userId)).thenReturn(List.of(case1Ind, case2Ind));
+
+        CampaignReconstructionResponse response = campaignService.reconstruct(investigationId);
+
+        assertThat(response.connectedInvestigations()).hasSize(1);
+        assertThat(response.connectedInvestigations().get(0).title()).isEqualTo("Phishing Attack Wave 2");
+        assertThat(response.connectedInvestigations().get(0).sharedIndicatorCount()).isEqualTo(1);
+        assertThat(response.campaignClassification()).isEqualTo("PROBABLE");
+        assertThat(response.attributionSummary()).contains("Phishing Attack Wave 2");
+    }
+
+    @Test
+    void filtersGenericBenignDomainsFromCampaignConnections() {
+        when(securityUtils.getCurrentUserId()).thenReturn(userId);
+        when(investigationRepository.findById(investigationId)).thenReturn(Optional.of(investigation));
+
+        User user = new User("analyst@example.com", "hash", "Analyst", UserRole.ROLE_ANALYST);
+        ReflectionTestUtils.setField(user, "id", userId);
+
+        UUID secondInvId = UUID.randomUUID();
+        Investigation secondInv = new Investigation(user, "Case 2", "Context 2", InvestigationCategory.PHISHING);
+        ReflectionTestUtils.setField(secondInv, "id", secondInvId);
+
+        Evidence ev2 = new Evidence(secondInv, EvidenceType.EMAIL, "Email 2");
+        ReflectionTestUtils.setField(ev2, "id", UUID.randomUUID());
+
+        // Both cases happen to mention google.com (generic domain)
+        ExtractedIndicator generic1 = new ExtractedIndicator(evidence1, IndicatorType.DOMAIN, "google.com", "google.com", "REGEX", Instant.now());
+        ExtractedIndicator generic2 = new ExtractedIndicator(ev2, IndicatorType.DOMAIN, "google.com", "google.com", "REGEX", Instant.now());
+
+        when(indicatorRepository.findByEvidenceInvestigationId(investigationId)).thenReturn(List.of(generic1));
+        when(indicatorRepository.findByEvidenceInvestigationUserId(userId)).thenReturn(List.of(generic1, generic2));
+
+        CampaignReconstructionResponse response = campaignService.reconstruct(investigationId);
+
+        assertThat(response.connectedInvestigations()).isEmpty();
+        assertThat(response.campaignClassification()).isEqualTo("ISOLATED_INCIDENT");
+    }
 }

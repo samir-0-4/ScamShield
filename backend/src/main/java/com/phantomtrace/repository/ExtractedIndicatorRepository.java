@@ -12,4 +12,5 @@ public interface ExtractedIndicatorRepository extends JpaRepository<ExtractedInd
     List<ExtractedIndicator> findByEvidenceIdOrderByExtractedAtAsc(UUID evidenceId);
     List<ExtractedIndicator> findByEvidenceIdAndIndicatorType(UUID evidenceId, IndicatorType indicatorType);
     List<ExtractedIndicator> findByEvidenceInvestigationId(UUID investigationId);
+    List<ExtractedIndicator> findByEvidenceInvestigationUserId(UUID userId);
 }

@@ -8,6 +8,8 @@ import {
   PlusCircle,
   ChevronRight,
   Clock,
+  Sparkles,
+  RotateCcw,
 } from 'lucide-react';
 import StatCard from '../components/ui/StatCard';
 import Card from '../components/common/Card';
@@ -34,18 +36,47 @@ export const DashboardPage = () => {
   const [page, setPage] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [seedingDemo, setSeedingDemo] = useState(false);
+  const [hasDemoData, setHasDemoData] = useState(false);
 
   const fetchDashboard = useCallback(() => {
     setLoading(true);
-    investigationService
-      .list({ page: 0, size: 100, sort: 'createdAt,desc' })
-      .then((res) => {
+    Promise.all([
+      investigationService.list({ page: 0, size: 100, sort: 'createdAt,desc' }),
+      Promise.resolve(investigationService.getDemoStatus?.()).catch(() => ({ hasDemoData: false })),
+    ])
+      .then(([res, demoStatus]) => {
         setPage(res);
+        setHasDemoData(Boolean(demoStatus?.hasDemoData));
         setError('');
       })
       .catch(() => setError('Could not load investigations. Check the backend is running.'))
       .finally(() => setLoading(false));
   }, []);
+
+  const handleSeedDemo = async () => {
+    setSeedingDemo(true);
+    try {
+      await investigationService.seedDemoCampaign();
+      fetchDashboard();
+    } catch {
+      setError('Failed to seed demo campaign.');
+    } finally {
+      setSeedingDemo(false);
+    }
+  };
+
+  const handleResetDemo = async () => {
+    setSeedingDemo(true);
+    try {
+      await investigationService.resetDemoCampaign();
+      fetchDashboard();
+    } catch {
+      setError('Failed to reset demo campaign.');
+    } finally {
+      setSeedingDemo(false);
+    }
+  };
 
   useEffect(() => {
     fetchDashboard();
@@ -109,7 +140,30 @@ export const DashboardPage = () => {
             Digital threat intelligence overview and real-time active cases
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          {hasDemoData ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleResetDemo}
+              loading={seedingDemo}
+              className="flex items-center gap-2 font-mono text-xs border-white/10 text-slate-300 hover:text-white"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Reset Demo</span>
+            </Button>
+          ) : (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleSeedDemo}
+              loading={seedingDemo}
+              className="flex items-center gap-2 font-semibold border-cyan-500/30 text-cyan-300 hover:bg-cyan-950/30 shadow-sm"
+            >
+              <Sparkles className="w-4 h-4 text-cyan-400" />
+              <span>Load Demo Campaign</span>
+            </Button>
+          )}
           <Link to="/investigations/new">
             <Button className="flex items-center gap-2 font-semibold shadow-lg">
               <PlusCircle className="w-4 h-4" />
@@ -199,6 +253,11 @@ export const DashboardPage = () => {
                     <p className="text-sm font-semibold text-slate-100 truncate group-hover:text-cyan-300 transition-colors">
                       {inv.title}
                     </p>
+                    {inv.title?.startsWith('[DEMO]') && (
+                      <span className="font-mono text-[9px] uppercase px-2 py-0.5 rounded-full border border-purple-500/30 bg-purple-500/15 text-purple-300 font-bold tracking-wider">
+                        SYNTHETIC DEMO
+                      </span>
+                    )}
                     {inv.category && <CategoryBadge category={inv.category} />}
                   </div>
                   <div className="flex items-center gap-3 text-xs text-slate-400 font-mono">

@@ -72,7 +72,15 @@ public class AiAgentOrchestrator {
         if (evidence.getEvidenceType() == EvidenceType.EMAIL) selected.add("EMAIL_DETECTIVE");
         if (evidence.getEvidenceType() == EvidenceType.IMAGE
                 || evidence.getEvidenceType() == EvidenceType.PDF) selected.add("FILE_ANALYST");
+        if (indicators.size() >= 2 || evidence.getEvidenceType() == EvidenceType.EMAIL) {
+            selected.add("INTELLIGENCE_CORRELATION");
+        }
+        selected.add("INVESTIGATION_REPORT");
         return selected.stream().map(name -> execute(name, evidence, indicators)).toList();
+    }
+
+    public AgentAnalysisResponse executeAgent(String name, Evidence evidence, List<ExtractedIndicator> indicators) {
+        return execute(name, evidence, indicators);
     }
 
     @Transactional(readOnly = true)

@@ -17,6 +17,8 @@ public interface InvestigationRepository extends JpaRepository<Investigation, UU
 
     Page<Investigation> findByUserIdAndStatus(UUID userId, InvestigationStatus status, Pageable pageable);
 
+    java.util.List<Investigation> findByUserIdOrderByCreatedAtDesc(UUID userId);
+
     Optional<Investigation> findByIdAndUserId(UUID id, UUID userId);
 
     boolean existsByIdAndUserId(UUID id, UUID userId);

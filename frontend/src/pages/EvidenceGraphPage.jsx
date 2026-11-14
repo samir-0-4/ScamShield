@@ -44,36 +44,78 @@ const edgeLabels = {
   ASSOCIATED_WITH: 'associated with',
 };
 
-const layoutNodes = (nodes) =>
-  nodes.map((node, index) => {
-    const column = index % 3;
-    const row = Math.floor(index / 3);
+const edgeColor = (type) => {
+  switch (type) {
+    case 'MATCHES_THREAT_INDICATOR':
+      return '#f43f5e';
+    case 'SHARES_INDICATOR':
+      return '#a855f7';
+    case 'REFERENCES_DOMAIN':
+    case 'CONTAINS_URL':
+      return '#06b6d4';
+    case 'MENTIONS_EMAIL':
+      return '#8b5cf6';
+    default:
+      return '#3b82f6';
+  }
+};
+
+const layoutNodes = (nodes) => {
+  let invIdx = 0;
+  let evIdx = 0;
+  let indIdx = 0;
+
+  return nodes.map((node) => {
+    let x = 60;
+    let y = 120;
+
+    if (node.type === 'INVESTIGATION') {
+      x = 50;
+      y = 120 + invIdx * 200;
+      invIdx++;
+    } else if (['MESSAGE', 'EMAIL', 'FILE'].includes(node.type)) {
+      x = 400;
+      y = 60 + evIdx * 190;
+      evIdx++;
+    } else {
+      const colOffset = (indIdx % 2) * 320;
+      const rowOffset = Math.floor(indIdx / 2) * 160;
+      x = 780 + colOffset;
+      y = 60 + rowOffset;
+      indIdx++;
+    }
+
     return {
       id: node.id,
       type: 'investigation',
-      position: { x: column * 320, y: row * 180 },
+      position: { x, y },
       data: { ...node, id: node.id },
     };
   });
+};
 
 const layoutEdges = (edges, nodes) =>
-  edges.map((edge) => ({
-    id: edge.id,
-    source: edge.source,
-    target: edge.target,
-    type: 'smoothstep',
-    label: edgeLabels[edge.type] || titleCase(edge.type),
-    data: {
-      ...edge,
-      sourceEvidenceId: nodes.find((node) => node.id === edge.source)?.evidenceId,
-      targetEvidenceId: nodes.find((node) => node.id === edge.target)?.evidenceId,
-    },
-    animated: false,
-    style: { stroke: '#3b82f6', strokeWidth: 1.5, opacity: 0.75 },
-    labelStyle: { fill: '#cbd5e1', fontSize: 11, fontWeight: 600, fontFamily: 'monospace' },
-    labelBgStyle: { fill: '#0a0f1d', fillOpacity: 0.95, rx: 6, ry: 6 },
-    labelBgPadding: [8, 5],
-  }));
+  edges.map((edge) => {
+    const color = edgeColor(edge.type);
+    const isThreat = edge.type === 'MATCHES_THREAT_INDICATOR';
+    return {
+      id: edge.id,
+      source: edge.source,
+      target: edge.target,
+      type: 'smoothstep',
+      label: edgeLabels[edge.type] || titleCase(edge.type),
+      data: {
+        ...edge,
+        sourceEvidenceId: nodes.find((node) => node.id === edge.source)?.evidenceId,
+        targetEvidenceId: nodes.find((node) => node.id === edge.target)?.evidenceId,
+      },
+      animated: isThreat,
+      style: { stroke: color, strokeWidth: isThreat ? 2.5 : 1.75, opacity: 0.85 },
+      labelStyle: { fill: '#e2e8f0', fontSize: 11, fontWeight: 600, fontFamily: 'monospace' },
+      labelBgStyle: { fill: '#0a0f1d', fillOpacity: 0.95, rx: 6, ry: 6 },
+      labelBgPadding: [8, 5],
+    };
+  });
 
 const DetailPanel = ({ selected, onClose, findings }) => {
   if (!selected) return null;
