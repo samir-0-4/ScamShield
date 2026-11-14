@@ -7,10 +7,17 @@
 [![React](https://img.shields.io/badge/React-18-blue.svg)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-6-purple.svg)](https://vitejs.dev/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue.svg)](https://www.postgresql.org/)
+[![Vercel Frontend](https://img.shields.io/badge/Vercel-Frontend%20Live-black.svg?logo=vercel)](https://frontend-eta-brown-50.vercel.app)
+[![Render Backend](https://img.shields.io/badge/Render-Backend%20Live-46E3B7.svg?logo=render)](https://phantomtrace-backend-vhxt.onrender.com/api/v1/health)
 [![Backend Tests](https://img.shields.io/badge/Backend%20Tests-191%2F191%20Passing-brightgreen.svg)]()
 [![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-32%2F32%20Passing-brightgreen.svg)]()
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Kiroween Category](https://img.shields.io/badge/Kiroween%202026-Frankenstein-red.svg)]()
+
+> 🌐 **Live Public Deployment:**
+> - **Frontend Application (Vercel):** [https://frontend-eta-brown-50.vercel.app](https://frontend-eta-brown-50.vercel.app)
+> - **Backend REST API (Render):** [https://phantomtrace-backend-vhxt.onrender.com](https://phantomtrace-backend-vhxt.onrender.com)
+> - **Live Health Diagnostic:** [`https://phantomtrace-backend-vhxt.onrender.com/api/v1/health`](https://phantomtrace-backend-vhxt.onrender.com/api/v1/health)
 
 ---
 
@@ -279,6 +286,9 @@ The **Investigation Report Service** produces immutable case snapshots designed 
 
 ## Complete REST API Reference
 
+- **Production Base URL:** `https://phantomtrace-backend-vhxt.onrender.com/api/v1`
+- **Local Base URL:** `http://localhost:8080/api/v1`
+
 All application endpoints are versioned under `/api/v1` and return standard JSON wrappers:
 
 ```json
@@ -366,7 +376,13 @@ Database & Infrastructure:
 
 ## Installation & Setup
 
-### Prerequisites
+### Live Hosted Deployment
+The platform is deployed and fully operational for evaluation without local configuration:
+- **Web Application (Vercel):** [https://frontend-eta-brown-50.vercel.app](https://frontend-eta-brown-50.vercel.app)
+- **Backend API (Render):** [https://phantomtrace-backend-vhxt.onrender.com](https://phantomtrace-backend-vhxt.onrender.com)
+- **Health Check:** [`https://phantomtrace-backend-vhxt.onrender.com/api/v1/health`](https://phantomtrace-backend-vhxt.onrender.com/api/v1/health)
+
+### Local Development Prerequisites
 - **Node.js** v20+ & **npm** v10+
 - **Java** 21+ (JDK)
 - **Maven** 3.9+
