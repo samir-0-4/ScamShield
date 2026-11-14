@@ -18,6 +18,7 @@ public record InvestigationResponse(
         SeverityLevel overallRiskLevel,
         Double riskScore,
         int evidenceCount,
+        boolean syntheticDemo,
         Instant createdAt,
         Instant updatedAt,
         Instant completedAt) {
@@ -32,6 +33,7 @@ public record InvestigationResponse(
                 entity.getOverallRiskLevel(),
                 entity.getRiskScore(),
                 entity.getEvidenceList() != null ? entity.getEvidenceList().size() : 0,
+                entity.isSyntheticDemo(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),
                 entity.getCompletedAt());

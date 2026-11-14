@@ -332,13 +332,18 @@ export const InvestigationReportPage = () => {
             subtitle="Cross-case provenance and infrastructure attribution"
             className="shadow-card"
             headerAction={
-              <Badge status={campaignClassification === 'CONFIRMED' ? 'HIGH' : campaignClassification === 'PROBABLE' ? 'MEDIUM' : 'LOW'}>
-                {campaignClassification.replace('_', ' ')}
+              <Badge status={campaignClassification === 'CONFIRMED' ? 'HIGH' : campaignClassification === 'SYNTHETIC_DEMO_CAMPAIGN' ? 'SYNTHETIC_DEMO' : campaignClassification === 'PROBABLE' ? 'MEDIUM' : 'LOW'}>
+                {campaignClassification.replace(/_/g, ' ')}
               </Badge>
             }
           >
             {campaignReconstruction ? (
               <div className="space-y-5">
+                {campaignClassification === 'SYNTHETIC_DEMO_CAMPAIGN' && (
+                  <div className="rounded-xl border border-purple-500/30 bg-purple-500/10 p-3 text-xs text-purple-300 font-mono">
+                    <strong>DEMONSTRATION DATASET:</strong> This campaign footprint is reconstructed from synthetic demonstration fixtures using RFC 2606 (.test) and RFC 5737 (TEST-NET) indicators. It illustrates cross-case correlation mechanics and does not represent real-world threat actor attribution.
+                  </div>
+                )}
                 {attributionSummary && (
                   <div className="rounded-xl border border-white/[0.08] bg-[#0c101c] p-4 text-xs text-slate-300 leading-relaxed font-sans print:border-slate-300 print:text-black">
                     <span className="font-mono text-2xs uppercase tracking-wider text-cyan-400 block mb-1">

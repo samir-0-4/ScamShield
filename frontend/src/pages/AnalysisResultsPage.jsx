@@ -115,7 +115,13 @@ const ProviderResults = ({ results }) => (
             <span className="font-bold text-slate-200 font-mono text-xs">
               {result.provider}
             </span>
-            <Badge status={result.threatStatus}>{titleCase(result.threatStatus)}</Badge>
+            <div className="flex items-center gap-1.5">
+              <Badge status={result.threatStatus}>{titleCase(result.threatStatus)}</Badge>
+              {(result.providerReference === 'SYNTHETIC_TEST_INDICATOR' ||
+                result.resultDetails?.includes('SYNTHETIC_TEST_INDICATOR')) && (
+                <Badge variant="SYNTHETIC_TEST_INDICATOR">Synthetic Test Indicator</Badge>
+              )}
+            </div>
           </div>
           <p className="break-all font-mono text-xs text-slate-300">{result.indicator}</p>
           <p className="text-2xs text-slate-400 leading-relaxed">

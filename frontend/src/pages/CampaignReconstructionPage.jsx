@@ -24,6 +24,13 @@ import { StatusBadge, CategoryBadge } from '../components/ui/StatusBadge';
 import investigationService from '../services/investigation/investigationService';
 
 const classificationStyles = {
+  SYNTHETIC_DEMO_CAMPAIGN: {
+    border: 'border-purple-500/40 bg-gradient-to-r from-purple-950/50 via-cyan-950/30 to-[#0c101c]',
+    badgeVariant: 'purple',
+    badgeText: 'SYNTHETIC DEMO CAMPAIGN',
+    iconColor: 'text-purple-400',
+    description: 'Simulated demonstration campaign using RFC 2606 (.test) and RFC 5737 (TEST-NET) test fixtures. Demonstrates multi-case correlation without real-world threat attribution.',
+  },
   CONFIRMED: {
     border: 'border-rose-500/40 bg-gradient-to-r from-rose-950/50 via-purple-950/30 to-[#0c101c]',
     badgeVariant: 'danger',
@@ -200,8 +207,8 @@ export const CampaignReconstructionPage = () => {
             </div>
             <div className="text-center px-3">
               <p className="text-2xs text-slate-400 uppercase">Verification</p>
-              <p className={`text-xs font-bold ${classification === 'CONFIRMED' ? 'text-rose-400' : 'text-slate-300'}`}>
-                {classification === 'CONFIRMED' ? 'EXTERNAL_INTEL' : 'DETERMINISTIC'}
+              <p className={`text-xs font-bold ${classification === 'CONFIRMED' ? 'text-rose-400' : classification === 'SYNTHETIC_DEMO_CAMPAIGN' ? 'text-purple-400' : 'text-slate-300'}`}>
+                {classification === 'CONFIRMED' ? 'EXTERNAL_INTEL' : classification === 'SYNTHETIC_DEMO_CAMPAIGN' ? 'SYNTHETIC_FIXTURE' : 'DETERMINISTIC'}
               </p>
             </div>
           </div>
@@ -244,8 +251,8 @@ export const CampaignReconstructionPage = () => {
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2">
                       <CategoryBadge category={inv.category} />
-                      <Badge variant={inv.confidence === 'CONFIRMED' ? 'danger' : 'warning'} size="xs">
-                        {inv.confidence}
+                      <Badge variant={inv.confidence === 'CONFIRMED' ? 'danger' : inv.confidence === 'SYNTHETIC_DEMO' ? 'purple' : 'warning'} size="xs">
+                        {inv.confidence === 'SYNTHETIC_DEMO' ? 'SYNTHETIC DEMO' : inv.confidence}
                       </Badge>
                     </div>
                     <span className="font-mono text-2xs text-slate-500">
@@ -336,10 +343,10 @@ export const CampaignReconstructionPage = () => {
                       Signal #{idx + 1}
                     </span>
                     <Badge
-                      variant={signal.confidence === 'CONFIRMED' ? 'danger' : signal.confidence === 'PROBABLE' ? 'warning' : 'cyan'}
+                      variant={signal.confidence === 'CONFIRMED' ? 'danger' : signal.confidence === 'SYNTHETIC_DEMO_CAMPAIGN' ? 'purple' : signal.confidence === 'PROBABLE' ? 'warning' : 'cyan'}
                       size="sm"
                     >
-                      {signal.confidence} CONFIDENCE
+                      {signal.confidence.replace(/_/g, ' ')}
                     </Badge>
                   </div>
                   <p className="text-sm font-medium text-slate-200">{signal.description}</p>
@@ -415,7 +422,7 @@ export const CampaignReconstructionPage = () => {
                       </td>
                       <td className="py-4 pl-4 pr-6 text-right">
                         <Badge
-                          variant={item.verificationStatus === 'VERIFIED_MALICIOUS' ? 'danger' : 'cyan'}
+                          variant={item.verificationStatus === 'VERIFIED_MALICIOUS' ? 'danger' : item.verificationStatus === 'SYNTHETIC_TEST_INDICATOR' ? 'purple' : 'cyan'}
                           size="sm"
                         >
                           {item.verificationStatus || 'DETERMINISTIC'}

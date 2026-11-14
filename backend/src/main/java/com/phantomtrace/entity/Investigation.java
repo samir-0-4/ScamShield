@@ -64,6 +64,9 @@ public class Investigation {
     @Column(name = "risk_score")
     private Double riskScore = 0.0;
 
+    @Column(name = "synthetic_demo", nullable = false)
+    private Boolean syntheticDemo = false;
+
     @CreatedDate
     @Column(name = "created_at", updatable = false, nullable = false)
     private Instant createdAt;
@@ -153,6 +156,18 @@ public class Investigation {
 
     public void setRiskScore(Double riskScore) {
         this.riskScore = riskScore;
+    }
+
+    public Boolean getSyntheticDemo() {
+        return syntheticDemo != null ? syntheticDemo : false;
+    }
+
+    public boolean isSyntheticDemo() {
+        return Boolean.TRUE.equals(syntheticDemo);
+    }
+
+    public void setSyntheticDemo(Boolean syntheticDemo) {
+        this.syntheticDemo = syntheticDemo != null ? syntheticDemo : false;
     }
 
     public Instant getCreatedAt() {

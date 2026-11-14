@@ -24,6 +24,10 @@ const VARIANTS = {
   FAILED: 'bg-rose-500/15 text-rose-300 border-rose-500/35 shadow-[0_0_12px_rgba(244,63,94,0.25)]',
 
   ACCENT: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/35 shadow-[0_0_12px_rgba(59,130,246,0.2)]',
+  PURPLE: 'bg-purple-500/15 text-purple-300 border-purple-500/35 shadow-[0_0_12px_rgba(168,85,247,0.2)]',
+  SYNTHETIC_DEMO: 'bg-purple-500/15 text-purple-300 border-purple-500/35 shadow-[0_0_12px_rgba(168,85,247,0.2)]',
+  SYNTHETIC_DEMO_CAMPAIGN: 'bg-purple-500/15 text-purple-300 border-purple-500/35 shadow-[0_0_12px_rgba(168,85,247,0.2)]',
+  SYNTHETIC_TEST_INDICATOR: 'bg-purple-500/15 text-purple-300 border-purple-500/35 shadow-[0_0_12px_rgba(168,85,247,0.2)]',
   DEFAULT: 'bg-[#111728] text-slate-300 border-white/[0.1]',
 };
 
@@ -40,6 +44,10 @@ const DOT_COLORS = {
   PENDING: 'bg-amber-400',
   UNKNOWN: 'bg-slate-400',
   DRAFT: 'bg-slate-400',
+  PURPLE: 'bg-purple-400',
+  SYNTHETIC_DEMO: 'bg-purple-400',
+  SYNTHETIC_DEMO_CAMPAIGN: 'bg-purple-400',
+  SYNTHETIC_TEST_INDICATOR: 'bg-purple-400',
 };
 
 export const Badge = ({ status, children, variant, dot = false, className = '' }) => {

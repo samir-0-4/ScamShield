@@ -7,8 +7,8 @@
 [![React](https://img.shields.io/badge/React-18-blue.svg)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-6-purple.svg)](https://vitejs.dev/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue.svg)](https://www.postgresql.org/)
-[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-87%2F87%20Passing-brightgreen.svg)]()
-[![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-31%2F31%20Passing-brightgreen.svg)]()
+[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-183%2F183%20Passing-brightgreen.svg)]()
+[![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-32%2F32%20Passing-brightgreen.svg)]()
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Kiroween Category](https://img.shields.io/badge/Kiroween%202026-Frankenstein-red.svg)]()
 
@@ -88,7 +88,7 @@ The primary differentiator of PhantomTrace is its ability to **reconstruct scam 
 flowchart TD
     subgraph Case1["Case #1: SMS Banking Phishing"]
         E1["Inbound SMS Evidence"] --> I1["secure-netbanking-verify.internal-demo.test"]
-        E1 --> IP1["185.220.101.5"]
+        E1 --> IP1["198.51.100.42 (RFC 5737)"]
     end
 
     subgraph Case2["Case #2: Executive KYC Spear-Phish"]
@@ -103,18 +103,23 @@ flowchart TD
 
     I1 -.->|"Shared Domain"| CR["Campaign Reconstruction Engine"]
     IP1 -.->|"Shared Server IP"| CR
-    CR -->|"Cross-Case Correlation"| CLASSIFY["Classification: CONFIRMED CAMPAIGN\n3 Connected Dossiers · 2 Shared Infrastructure Points"]
+    CR -->|"Cross-Case Correlation"| CLASSIFY["Classification: SYNTHETIC_DEMO_CAMPAIGN\n3 Connected Dossiers · 2 Shared Demo Infrastructure Points"]
 ```
 
 ### Campaign Reconstruction Engine Mechanics
 1. **Tenant-Safe Indicator Indexing:** Queries all indicators owned by the authenticated tenant (`findByEvidenceInvestigationUserId`) to uncover cross-case links while maintaining strict multi-tenant isolation.
 2. **Generic Benign Domain Noise Filter:** Automatically filters common platforms (`google.com`, `gmail.com`, `yahoo.com`, `outlook.com`, `microsoft.com`, `apple.com`, `bit.ly`, `tinyurl.com`, `t.co`, `facebook.com`, `twitter.com`, `linkedin.com`) to prevent false campaign associations.
-3. **Four-Tier Explainable Classification:**
+3. **Five-Tier Explainable Classification Standard:**
    - **`ISOLATED_INCIDENT`**: No shared infrastructure across evidence items or dossiers.
    - **`POSSIBLE`**: Single indicator overlap or heuristic correlation observed across artifacts.
    - **`PROBABLE`**: Multiple distinct infrastructure indicators (e.g. domain, IP, sender identity) converge across independent investigations.
-   - **`CONFIRMED`**: Shared infrastructure combined with positive threat intelligence verification (e.g., active VirusTotal / URLhaus malicious listing).
+   - **`CONFIRMED`**: Real-world shared infrastructure verified as malicious by authoritative external threat intelligence feeds (e.g., active VirusTotal / URLhaus malicious listing).
+   - **`SYNTHETIC_DEMO_CAMPAIGN`**: Dedicated classification for demonstration test fixtures (RFC 2606 `.test` domains and RFC 5737 TEST-NET IPs like `198.51.100.42`). Synthetic fixtures **never** produce a real-world `CONFIRMED` campaign, maintaining 100% forensic defensibility.
 4. **Forensic Attribution Narrative:** Generates automated, human-readable explanations detailing exactly which infrastructure indicators connect the dossiers, how many cases are linked, and the chronological timeline.
+5. **Synthetic-to-Genuine Contamination Prevention:** Genuine investigations are strictly partitioned from synthetic demo test fixtures. If a genuine case shares an indicator with a synthetic demo case, the synthetic dossier is quarantined (`linkConfidence: SYNTHETIC_DEMO`), an explicit `SYNTHETIC_DEMO_ISOLATION` signal is recorded, and genuine attribution requires $\ge 2$ independent real-world indicators. Synthetic fixtures can never elevate, downgrade, or contaminate a genuine forensic classification.
+6. **RFC Standards Compliance & Threat Feed Safeguards:**
+   - Detects all RFC 5737 TEST-NET ranges (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`) and RFC 2606 / 6761 test TLDs (`.test`, `.invalid`, `.localhost`, `.example`), returning `UNKNOWN` with an explicit `SYNTHETIC_TEST_INDICATOR` reason without consuming external VirusTotal/URLhaus API quotas.
+   - RFC 2606 reserved documentation domains (`example.com`, `example.net`, `example.org`) are distinguished from test fixtures, ensuring threat intelligence lookups proceed normally in genuine investigations while strictly rejecting non-RFC domains like `example.edu`.
 
 ---
 
@@ -183,7 +188,7 @@ flowchart LR
     end
 
     subgraph Data["Data & Intelligence Storage"]
-        PG[("PostgreSQL 16\nFlyway Migrations V1–V9")]
+        PG[("PostgreSQL 16\nFlyway Migrations V1–V10")]
         FS[("Secure Local Storage\n(25 MB Limit, No Exec)")]
     end
 
@@ -233,10 +238,11 @@ $$\text{Risk Score} = \min\left(100, \sum_{i} w_i \cdot \text{signal}_i\right)$$
 | **Unusual URL / Path Obfuscation** | **+10** | `DETERMINISTIC` | IP in URL, suspicious TLD, high sub-domain depth, URL shortener |
 
 ### Risk Severities:
-- **`LOW` (0–29):** Informational or benign characteristics.
-- **`MODERATE` (30–59):** Unverified links or standard marketing urgency.
-- **`HIGH` (60–79):** Multi-indicator convergence, impersonation, and credential lures.
-- **`CRITICAL` (80–100):** Confirmed threat intelligence detections or coordinated multi-case attacks.
+- **`LOW` (0–19):** Informational or benign characteristics.
+- **`MODERATE` (20–39):** Isolated risk indicators such as payment requests or urgency language.
+- **`HIGH` (40–69):** Multi-signal convergence combining credentials, impersonation, and urgency lures.
+- **`CRITICAL` (70–100):** Confirmed external malicious threat intelligence or cumulative critical threat vectors.
+- **`INCONCLUSIVE`:** Insufficient evidence or no deterministic indicators extracted (evaluated independently of score).
 
 ---
 
@@ -248,9 +254,9 @@ To enable reliable, zero-configuration demonstrations during hackathon evaluatio
   1. `[DEMO] Apex Campaign — SMS Banking Alert & Account Suspension` (Urgent SMS lure)
   2. `[DEMO] Apex Campaign — Spear-Phishing Email & KYC Lure` (Corporate email phish)
   3. `[DEMO] Apex Campaign — Vishing Follow-up & Fraud Refund Lure` (Voice transcript refund lure)
-- **Shared Synthetic Infrastructure:** All 3 cases converge on the domain `secure-netbanking-verify.internal-demo.test` and server IP `185.220.101.5`.
-- **Absolute Rule B Compliance:** All demo cases are prominently prefixed with `[DEMO]` and rendered in the frontend with `SYNTHETIC DEMO` badges to ensure judges never mistake synthetic test fixtures for live production incidents.
-- **Idempotent Reset (`POST /api/v1/demo/reset`):** Safely cleans up all demo dossiers for the authenticated user without affecting genuine user investigations.
+- **Shared Synthetic Infrastructure:** All 3 cases converge on the domain `secure-netbanking-verify.internal-demo.test` and server IP `198.51.100.42` (RFC 5737 TEST-NET-2).
+- **Absolute Rule B Compliance:** All demo cases are prominently prefixed with `[DEMO]` and classified as `SYNTHETIC_DEMO_CAMPAIGN` with `SYNTHETIC DEMO` badges to ensure judges never mistake synthetic test fixtures for live production incidents. Synthetic fixtures receive zero real-world threat intelligence points.
+- **Idempotent Reset (`DELETE /api/v1/demo/reset`):** Safely cleans up demo dossiers explicitly marked with persistent `syntheticDemo` provenance for the authenticated user without affecting genuine user investigations.
 
 ---
 
@@ -311,7 +317,7 @@ All application endpoints are versioned under `/api/v1` and return standard JSON
 
 ### 7. Synthetic Demo Dataset (`/api/v1/demo`)
 - `POST /api/v1/demo/seed` — Seed 3-case interconnected Apex Banking Fraud campaign
-- `POST /api/v1/demo/reset` — Remove all demo cases belonging to authenticated user
+- `DELETE /api/v1/demo/reset` — Remove demo cases belonging to authenticated user (strictly scoped to `syntheticDemo = true`)
 - `GET /api/v1/demo/status` — Check whether demo campaign is currently active
 
 ### 8. Forensic Reports (`/api/v1/investigations/{id}/reports`)
@@ -342,7 +348,7 @@ Backend:
 ├── Framework: Spring Boot 3.4.2
 ├── Security: Spring Security 6 + JJWT 0.12.6 (HS256)
 ├── Database Access: Spring Data JPA + Hibernate ORM
-├── Migrations: Flyway (V1–V9)
+├── Migrations: Flyway (V1–V10)
 ├── Rate Limiting: Bucket4j
 ├── Forensics: Apache PDFBox 3.0.4, ZXing 3.5.3, Tess4J 5.13.0
 └── Unit Testing: JUnit 5, Mockito, Spring MockRestServiceServer
@@ -453,8 +459,8 @@ cd frontend && npm test -- --run && npm run lint && npm run build
 
 | Test Suite | Total Tests | Passed | Failed | Errors | Skipped | Status |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Backend Suite (JUnit 5 + Mockito)** | **87** | **87** | **0** | **0** | **0** | ✅ **PASSING** |
-| **Frontend Suite (Vitest + RTL)** | **31** | **31** | **0** | **0** | **0** | ✅ **PASSING** |
+| **Backend Suite (JUnit 5 + Mockito)** | **183** | **183** | **0** | **0** | **0** | ✅ **PASSING** |
+| **Frontend Suite (Vitest + RTL)** | **32** | **32** | **0** | **0** | **0** | ✅ **PASSING** |
 | **Frontend ESLint Check** | Codebase | Clean | **0** | **0** | — | ✅ **0 ERRORS / 0 WARNS** |
 | **Frontend Production Build (Vite)** | 1,727 modules | Clean | **0** | **0** | — | ✅ **BUILT IN ~1.6s** |
 
@@ -481,6 +487,7 @@ To preserve technical credibility under adversarial forensic scrutiny:
 3. **External Threat Feed Quotas:** Live queries to VirusTotal and URLhaus are subject to external API rate limits. When limits are exceeded, indicators gracefully fall back to local heuristic analysis.
 4. **No Raw WHOIS / RDAP Queries:** Domain age, registrant names, and ASN details are not queried via raw sockets to maintain server isolation.
 5. **Local Storage Default:** File uploads default to local filesystem storage (`./uploads`). Production deployments should configure S3-compatible object storage.
+6. **IPv6 Indicator Extraction Pipeline:** The deterministic extraction pipeline (`DeterministicExtractionService`) currently targets IPv4 addresses (`IP_ADDRESS`). IPv6 indicators—including documentation ranges such as RFC 3849 (`2001:db8::/32`)—are not parsed by the regular expression pipeline. Synthetic indicator detection for RFC 5737 TEST-NET ranges strictly targets IPv4.
 
 ---
 

@@ -512,9 +512,15 @@ export const EvidenceAnalysisPage = () => {
                   <span className="text-xs font-bold text-slate-100 font-mono">
                     {result.provider}
                   </span>
-                  <Badge variant={result.threatStatus}>
-                    {result.threatStatus?.replaceAll('_', ' ')}
-                  </Badge>
+                  <div className="flex items-center gap-1.5">
+                    <Badge variant={result.threatStatus}>
+                      {result.threatStatus?.replaceAll('_', ' ')}
+                    </Badge>
+                    {(result.providerReference === 'SYNTHETIC_TEST_INDICATOR' ||
+                      result.resultDetails?.includes('SYNTHETIC_TEST_INDICATOR')) && (
+                      <Badge variant="SYNTHETIC_TEST_INDICATOR">Synthetic Test Indicator</Badge>
+                    )}
+                  </div>
                 </div>
                 <p className="break-all text-xs font-mono text-slate-300">{result.indicator}</p>
                 <p className="text-2xs text-slate-400 leading-relaxed">

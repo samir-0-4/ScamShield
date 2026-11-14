@@ -10,6 +10,7 @@ import com.phantomtrace.integration.urlhaus.UrlhausClient;
 import com.phantomtrace.integration.virustotal.VirusTotalClient;
 import com.phantomtrace.repository.ExtractedIndicatorRepository;
 import com.phantomtrace.repository.ThreatLookupRepository;
+import com.phantomtrace.util.SyntheticIndicatorDetector;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +46,29 @@ public class ThreatIntelligenceService {
                 .findByEvidenceIdAndIndicatorType(evidenceId, IndicatorType.URL);
         List<ThreatLookupResponse> results = new ArrayList<>();
         for (ExtractedIndicator indicator : indicators) {
+            boolean isSynthetic = SyntheticIndicatorDetector.isSyntheticIndicator(indicator.getNormalizedValue())
+                    || SyntheticIndicatorDetector.isSyntheticIndicator(indicator.getOriginalValue());
+
+            if (isSynthetic) {
+                results.add(lookup("VirusTotal", indicator, () -> new ProviderResult(
+                        indicator.getNormalizedValue(),
+                        LookupStatus.COMPLETED.name(),
+                        ThreatStatus.UNKNOWN.name(),
+                        "SYNTHETIC_TEST_INDICATOR: RFC 2606 / RFC 5737 demonstration test fixture. External VirusTotal lookup skipped to prevent threat intelligence pollution.",
+                        SyntheticIndicatorDetector.REASON_SYNTHETIC_TEST_INDICATOR,
+                        null
+                )));
+                results.add(lookup("URLhaus", indicator, () -> new ProviderResult(
+                        indicator.getOriginalValue(),
+                        LookupStatus.COMPLETED.name(),
+                        ThreatStatus.UNKNOWN.name(),
+                        "SYNTHETIC_TEST_INDICATOR: RFC 2606 / RFC 5737 demonstration test fixture. External URLhaus lookup skipped to prevent threat intelligence pollution.",
+                        SyntheticIndicatorDetector.REASON_SYNTHETIC_TEST_INDICATOR,
+                        null
+                )));
+                continue;
+            }
+
             results.add(lookup("VirusTotal", indicator, () -> {
                 var vt = virusTotalClient.lookup(indicator.getNormalizedValue());
                 return new ProviderResult(vt.indicator(), vt.lookupStatus(), vt.threatStatus(),

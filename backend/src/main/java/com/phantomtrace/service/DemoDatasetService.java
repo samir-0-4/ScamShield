@@ -86,7 +86,7 @@ public class DemoDatasetService {
 
         // Shared Campaign Indicators (Apex Banking Fraud Campaign)
         String sharedDomain = "secure-netbanking-verify.internal-demo.test";
-        String sharedIp = "185.220.101.5";
+        String sharedIp = "198.51.100.42";
 
         // ==========================================
         // CASE 1: Urgent SMS Alert & Credential Harvesting
@@ -99,8 +99,9 @@ public class DemoDatasetService {
                 InvestigationCategory.PHISHING
         );
         case1.setStatus(InvestigationStatus.COMPLETED);
-        case1.setRiskScore(85.0);
-        case1.setOverallRiskLevel(SeverityLevel.CRITICAL);
+        case1.setRiskScore(45.0);
+        case1.setOverallRiskLevel(SeverityLevel.HIGH);
+        case1.setSyntheticDemo(true);
         case1 = investigationRepository.save(case1);
         createdInvestigations.add(case1);
 
@@ -141,36 +142,36 @@ public class DemoDatasetService {
                 "DETERMINISTIC_LEXICAL_EXTRACTOR", now.minus(2, ChronoUnit.HOURS));
         indicatorRepository.save(ind1Otp);
 
-        // Threat Lookup for Case 1
+        // Threat Lookup for Case 1 (RFC 2606 Synthetic Demo Fixture - marked UNKNOWN with SYNTHETIC_TEST_INDICATOR)
         ThreatLookup lookup1 = new ThreatLookup(
                 ind1Url,
                 "URLhaus (Synthetic Demonstration)",
                 "https://" + sharedDomain + "/login?case=49102",
                 LookupStatus.COMPLETED,
-                ThreatStatus.MALICIOUS,
-                "{\"threat\": \"credential_stealer\", \"signature\": \"ApexBankingTrojan\", \"confidence\": 98}",
-                "URLHAUS-DEMO-2026-9941",
+                ThreatStatus.UNKNOWN,
+                "SYNTHETIC_TEST_INDICATOR: RFC 2606 test domain (.test) — synthetic demonstration fixture; not queried against external feeds to prevent threat intelligence pollution",
+                "SYNTHETIC_TEST_INDICATOR",
                 null,
                 now.minus(2, ChronoUnit.HOURS)
         );
         lookupRepository.save(lookup1);
 
-        // Risk Assessment Case 1
+        // Risk Assessment Case 1: deterministic & heuristic signals (no fake verified intel)
         RiskAssessment risk1 = new RiskAssessment(
                 case1,
-                85,
-                RiskCategory.CRITICAL,
-                0.95,
-                "All deterministic indicators and threat intelligence feeds resolved.",
-                "High-confidence phishing campaign detected. Multiple credential theft terms, verified malicious URLhaus listing, and direct IP reference.",
+                45,
+                RiskCategory.HIGH,
+                0.85,
+                "External threat intelligence queries skipped for RFC 2606 / 5737 demonstration test fixtures.",
+                "High-risk credential harvesting phishing lure identified via deterministic lexical and structural extraction.",
                 now.minus(2, ChronoUnit.HOURS)
         );
         risk1 = assessmentRepository.save(risk1);
 
         String ev1Ref = ev1.getId() != null ? ev1.getId().toString() : "DEMO-EV1";
-        contributionRepository.save(new RiskContribution(risk1, "MALICIOUS_THREAT_INTEL", "Verified Malicious Threat Intel", 40, ev1Ref, "URLhaus verified indicator as active banking phishing landing page."));
         contributionRepository.save(new RiskContribution(risk1, "CREDENTIAL_OTP", "Credential and OTP Harvester", 25, ev1Ref, "Explicit solicitation of authentication credentials and one-time passcodes."));
-        contributionRepository.save(new RiskContribution(risk1, "URGENCY_PRESSURE", "Urgency and Suspension Threat", 20, ev1Ref, "High-pressure coercion language threatening account deactivation."));
+        contributionRepository.save(new RiskContribution(risk1, "URGENCY", "Urgency and Suspension Threat", 10, ev1Ref, "High-pressure coercion language threatening immediate account deactivation."));
+        contributionRepository.save(new RiskContribution(risk1, "UNUSUAL_URL", "Suspicious Banking Landing Path", 10, ev1Ref, "Simulated phishing URL pointing to unauthenticated banking login path."));
 
         // ==========================================
         // CASE 2: Spear-Phishing Email & KYC Lure
@@ -182,8 +183,9 @@ public class DemoDatasetService {
                 InvestigationCategory.PHISHING
         );
         case2.setStatus(InvestigationStatus.COMPLETED);
-        case2.setRiskScore(75.0);
+        case2.setRiskScore(50.0);
         case2.setOverallRiskLevel(SeverityLevel.HIGH);
+        case2.setSyntheticDemo(true);
         case2 = investigationRepository.save(case2);
         createdInvestigations.add(case2);
 
@@ -215,14 +217,15 @@ public class DemoDatasetService {
                 "DETERMINISTIC_EMAIL_EXTRACTOR", now.minus(1, ChronoUnit.HOURS));
         indicatorRepository.save(ind2Email);
 
+        // Threat Lookup for Case 2 (RFC 2606 Synthetic Demo Fixture - marked UNKNOWN with SYNTHETIC_TEST_INDICATOR)
         ThreatLookup lookup2 = new ThreatLookup(
                 ind2Domain,
                 "VirusTotal (Synthetic Demonstration)",
                 sharedDomain,
                 LookupStatus.COMPLETED,
-                ThreatStatus.MALICIOUS,
-                "{\"positives\": 14, \"total\": 90, \"category\": \"phishing\", \"reputation\": -80}",
-                "VT-DEMO-2026-8812",
+                ThreatStatus.UNKNOWN,
+                "SYNTHETIC_TEST_INDICATOR: RFC 2606 test domain (.test) — synthetic demonstration fixture; not queried against external feeds to prevent threat intelligence pollution",
+                "SYNTHETIC_TEST_INDICATOR",
                 null,
                 now.minus(1, ChronoUnit.HOURS)
         );
@@ -230,19 +233,19 @@ public class DemoDatasetService {
 
         RiskAssessment risk2 = new RiskAssessment(
                 case2,
-                75,
+                50,
                 RiskCategory.HIGH,
-                0.90,
-                "External email headers verified. Domain reputation verified.",
-                "Targeted spear-phishing attack attempting KYC credential capture. Domain verified malicious by 14 security engines.",
+                0.85,
+                "External threat intelligence queries skipped for RFC 2606 / 5737 demonstration test fixtures.",
+                "Targeted spear-phishing attack attempting KYC credential capture. Display name and sender address mimic official compliance desk.",
                 now.minus(1, ChronoUnit.HOURS)
         );
         risk2 = assessmentRepository.save(risk2);
 
         String ev2Ref = ev2.getId() != null ? ev2.getId().toString() : "DEMO-EV2";
-        contributionRepository.save(new RiskContribution(risk2, "MALICIOUS_THREAT_INTEL", "Verified Malicious Threat Intel", 40, ev2Ref, "VirusTotal verified domain reputation as known phishing infrastructure."));
-        contributionRepository.save(new RiskContribution(risk2, "IMPERSONATION", "Corporate Bank Impersonation", 20, ev2Ref, "Spoofed sender address mimicking official compliance office."));
-        contributionRepository.save(new RiskContribution(risk2, "URGENCY", "24-Hour Coercion Window", 15, ev2Ref, "Time-limited urgency deadline forcing hasty victim response."));
+        contributionRepository.save(new RiskContribution(risk2, "CREDENTIAL_OTP", "KYC Credential Capture", 25, ev2Ref, "Deceptive KYC compliance lure directing to unauthorized verification portal."));
+        contributionRepository.save(new RiskContribution(risk2, "IMPERSONATION", "Corporate Bank Impersonation", 15, ev2Ref, "Spoofed sender address mimicking official compliance office."));
+        contributionRepository.save(new RiskContribution(risk2, "URGENCY", "24-Hour Coercion Deadline", 10, ev2Ref, "Time-limited urgency deadline forcing hasty victim response."));
 
         // ==========================================
         // CASE 3: Voice Phishing / Fraud Dept Refund
@@ -254,8 +257,9 @@ public class DemoDatasetService {
                 InvestigationCategory.IDENTITY_FRAUD
         );
         case3.setStatus(InvestigationStatus.COMPLETED);
-        case3.setRiskScore(70.0);
+        case3.setRiskScore(55.0);
         case3.setOverallRiskLevel(SeverityLevel.HIGH);
+        case3.setSyntheticDemo(true);
         case3 = investigationRepository.save(case3);
         createdInvestigations.add(case3);
 
@@ -286,7 +290,7 @@ public class DemoDatasetService {
 
         RiskAssessment risk3 = new RiskAssessment(
                 case3,
-                70,
+                55,
                 RiskCategory.HIGH,
                 0.88,
                 "Verified phone transcript and routing indicators.",
@@ -296,9 +300,10 @@ public class DemoDatasetService {
         risk3 = assessmentRepository.save(risk3);
 
         String ev3Ref = ev3.getId() != null ? ev3.getId().toString() : "DEMO-EV3";
-        contributionRepository.save(new RiskContribution(risk3, "IMPERSONATION", "Customer Support Impersonation", 25, ev3Ref, "Attacker masquerades as bank fraud investigation department."));
-        contributionRepository.save(new RiskContribution(risk3, "PAYMENT_REFUND", "Advance Fee / Refund Scheme", 25, ev3Ref, "Solicitation of transaction reference to intercept reversal."));
-        contributionRepository.save(new RiskContribution(risk3, "UNUSUAL_URL", "Unusual Banking Path", 20, ev3Ref, "Unregistered third-party domain hosting banking refund workflow."));
+        contributionRepository.save(new RiskContribution(risk3, "UPFRONT_PAYMENT", "Advance Fee / Refund Scheme", 20, ev3Ref, "Solicitation of transaction reference to intercept reversal."));
+        contributionRepository.save(new RiskContribution(risk3, "IMPERSONATION", "Customer Support Impersonation", 15, ev3Ref, "Attacker masquerades as bank fraud investigation department."));
+        contributionRepository.save(new RiskContribution(risk3, "UNUSUAL_URL", "Unusual Banking Path", 10, ev3Ref, "Unregistered third-party domain hosting banking refund workflow."));
+        contributionRepository.save(new RiskContribution(risk3, "URGENCY", "Support Ticket Urgency Lure", 10, ev3Ref, "Urgent support follow-up demanding quick transaction reference submission."));
 
         // Establish Evidence Relationships
         relationshipRepository.save(new EvidenceRelationship(
@@ -335,7 +340,7 @@ public class DemoDatasetService {
         UUID userId = securityUtils.getCurrentUserId();
         List<Investigation> userCases = investigationRepository.findByUserIdOrderByCreatedAtDesc(userId);
         for (Investigation inv : userCases) {
-            if (inv.getTitle() != null && inv.getTitle().startsWith(DEMO_PREFIX)) {
+            if (inv.isSyntheticDemo()) {
                 investigationRepository.delete(inv);
             }
         }
@@ -344,6 +349,6 @@ public class DemoDatasetService {
     public boolean hasDemoCampaign() {
         UUID userId = securityUtils.getCurrentUserId();
         List<Investigation> userCases = investigationRepository.findByUserIdOrderByCreatedAtDesc(userId);
-        return userCases.stream().anyMatch(inv -> inv.getTitle() != null && inv.getTitle().startsWith(DEMO_PREFIX));
+        return userCases.stream().anyMatch(Investigation::isSyntheticDemo);
     }
 }

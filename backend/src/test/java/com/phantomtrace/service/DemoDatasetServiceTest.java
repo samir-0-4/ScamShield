@@ -4,6 +4,12 @@ import com.phantomtrace.entity.Investigation;
 import com.phantomtrace.entity.User;
 import com.phantomtrace.enums.InvestigationCategory;
 import com.phantomtrace.enums.UserRole;
+import com.phantomtrace.entity.ExtractedIndicator;
+import com.phantomtrace.entity.RiskContribution;
+import com.phantomtrace.entity.ThreatLookup;
+import com.phantomtrace.enums.ThreatStatus;
+import org.mockito.ArgumentCaptor;
+import static org.mockito.Mockito.never;
 import com.phantomtrace.repository.EvidenceRelationshipRepository;
 import com.phantomtrace.repository.EvidenceRepository;
 import com.phantomtrace.repository.ExtractedIndicatorRepository;
@@ -85,26 +91,62 @@ class DemoDatasetServiceTest {
             return r;
         });
 
+        ArgumentCaptor<ExtractedIndicator> indicatorCaptor = ArgumentCaptor.forClass(ExtractedIndicator.class);
+        ArgumentCaptor<RiskContribution> contributionCaptor = ArgumentCaptor.forClass(RiskContribution.class);
+        ArgumentCaptor<ThreatLookup> lookupCaptor = ArgumentCaptor.forClass(ThreatLookup.class);
+
         List<Investigation> seeded = demoDatasetService.seedDemoCampaign();
 
         assertThat(seeded).hasSize(3);
+        assertThat(seeded).allMatch(Investigation::isSyntheticDemo);
         assertThat(seeded).allMatch(inv -> inv.getTitle().startsWith(DemoDatasetService.DEMO_PREFIX));
         assertThat(seeded.get(0).getTitle()).contains("Apex Campaign");
         assertThat(seeded.get(1).getTitle()).contains("KYC Lure");
         assertThat(seeded.get(2).getTitle()).contains("Refund");
+
+        // Verify synthetic IP is 198.51.100.42
+        verify(indicatorRepository, org.mockito.Mockito.atLeastOnce()).save(indicatorCaptor.capture());
+        List<String> indicatorValues = indicatorCaptor.getAllValues().stream()
+                .map(ExtractedIndicator::getNormalizedValue)
+                .toList();
+        assertThat(indicatorValues).contains("198.51.100.42");
+        assertThat(indicatorValues).doesNotContain("185.220.101.5");
+        assertThat(indicatorValues).contains("secure-netbanking-verify.internal-demo.test");
+
+        // Verify synthetic indicators do not receive real-world verified threat-intelligence points
+        verify(contributionRepository, org.mockito.Mockito.atLeastOnce()).save(contributionCaptor.capture());
+        List<RiskContribution> contributions = contributionCaptor.getAllValues();
+        assertThat(contributions).noneMatch(c -> "MALICIOUS_THREAT_INTEL".equals(c.getSignalKey()));
+        assertThat(contributions).noneMatch(c -> c.getWeight() == 40);
+
+        // Verify threat lookups are marked UNKNOWN with SYNTHETIC_TEST_INDICATOR for synthetic fixtures
+        verify(lookupRepository, org.mockito.Mockito.atLeastOnce()).save(lookupCaptor.capture());
+        List<ThreatLookup> lookups = lookupCaptor.getAllValues();
+        assertThat(lookups).allMatch(l -> l.getThreatStatus() == ThreatStatus.UNKNOWN);
+        assertThat(lookups).allMatch(l -> "SYNTHETIC_TEST_INDICATOR".equals(l.getProviderReference()));
     }
 
     @Test
-    void resetsDemoCampaignOnlyForDemoCases() {
+    void resetsDemoCampaignOnlyForDemoCasesWithSyntheticDemoMarker() {
         when(securityUtils.getCurrentUserId()).thenReturn(userId);
 
         Investigation realCase = new Investigation(analyst, "Real Fraud Case", "Notes", InvestigationCategory.PHISHING);
-        Investigation demoCase = new Investigation(analyst, "[DEMO] Apex Campaign Case", "Demo", InvestigationCategory.PHISHING);
+        realCase.setSyntheticDemo(false);
 
-        when(investigationRepository.findByUserIdOrderByCreatedAtDesc(userId)).thenReturn(List.of(realCase, demoCase));
+        // A user case that happens to have [DEMO] in title but is NOT a synthetic demo
+        Investigation userCaseWithDemoPrefix = new Investigation(analyst, "[DEMO] Genuine Enterprise Incident", "Notes", InvestigationCategory.PHISHING);
+        userCaseWithDemoPrefix.setSyntheticDemo(false);
+
+        Investigation demoCase = new Investigation(analyst, "[DEMO] Apex Campaign Case", "Demo", InvestigationCategory.PHISHING);
+        demoCase.setSyntheticDemo(true);
+
+        when(investigationRepository.findByUserIdOrderByCreatedAtDesc(userId))
+                .thenReturn(List.of(realCase, userCaseWithDemoPrefix, demoCase));
 
         demoDatasetService.resetDemoCampaign();
 
         verify(investigationRepository).delete(demoCase);
+        verify(investigationRepository, never()).delete(realCase);
+        verify(investigationRepository, never()).delete(userCaseWithDemoPrefix);
     }
 }
