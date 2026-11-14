@@ -7,7 +7,7 @@
 [![React](https://img.shields.io/badge/React-18-blue.svg)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-6-purple.svg)](https://vitejs.dev/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue.svg)](https://www.postgresql.org/)
-[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-186%2F186%20Passing-brightgreen.svg)]()
+[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-189%2F189%20Passing-brightgreen.svg)]()
 [![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-32%2F32%20Passing-brightgreen.svg)]()
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Kiroween Category](https://img.shields.io/badge/Kiroween%202026-Frankenstein-red.svg)]()
@@ -463,13 +463,13 @@ cd frontend && npm test -- --run && npm run lint && npm run build
 
 | Test Suite | Total Tests | Passed | Failed | Errors | Skipped | Status |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Backend Suite (JUnit 5 + Mockito)** | **186** | **186** | **0** | **0** | **0** | ✅ **PASSING** |
+| **Backend Suite (JUnit 5 + Mockito)** | **189** | **189** | **0** | **0** | **0** | ✅ **PASSING** |
 | **Frontend Suite (Vitest + RTL)** | **32** | **32** | **0** | **0** | **0** | ✅ **PASSING** |
 | **Frontend ESLint Check** | Codebase | Clean | **0** | **0** | — | ✅ **0 ERRORS / 0 WARNS** |
 | **Frontend Production Build (Vite)** | 1,727 modules | Clean | **0** | **0** | — | ✅ **BUILT IN ~1.6s** |
 
 > [!NOTE]
-> **Automated Test Isolation & Live Threat Feed Feasibility:** The 186 automated backend tests verify integration contracts, JSON schemas, threat mapping, and rate limiting using Mockito and Spring's `MockRestServiceServer`. In accordance with forensic testing integrity, automated tests do not claim live external VirusTotal or URLhaus verification based on mocked test executions. Live threat intelligence queries are executed in runtime environments when API keys are configured.
+> **Automated Test Isolation & Live Threat Feed Feasibility:** The 189 automated backend tests verify integration contracts, JSON schemas, threat mapping, and rate limiting using Mockito and Spring's `MockRestServiceServer`. In accordance with forensic testing integrity, automated tests do not claim live external VirusTotal or URLhaus verification based on mocked test executions. Live threat intelligence queries are executed in runtime environments when API keys are configured.
 
 ---
 
