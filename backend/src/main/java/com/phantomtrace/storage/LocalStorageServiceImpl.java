@@ -1,6 +1,8 @@
 package com.phantomtrace.storage;
 
 import com.phantomtrace.exception.ApiException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -20,15 +22,27 @@ import java.util.UUID;
 @Service
 public class LocalStorageServiceImpl implements FileStorageService {
 
+    private static final Logger log = LoggerFactory.getLogger(LocalStorageServiceImpl.class);
+
     private final Path rootLocation;
 
     public LocalStorageServiceImpl(@Value("${phantomtrace.storage.local.upload-dir:./uploads}") String uploadDir) {
-        this.rootLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
+        Path location = Paths.get(uploadDir).toAbsolutePath().normalize();
         try {
-            Files.createDirectories(this.rootLocation);
-        } catch (IOException e) {
-            throw new ApiException("Could not initialize local storage folder", HttpStatus.INTERNAL_SERVER_ERROR);
+            Files.createDirectories(location);
+            log.info("Initialized local storage folder at: {}", location);
+        } catch (Exception e) {
+            log.warn("Failed to create configured upload directory at {}: {}. Attempting fallback to system temp directory.", location, e.getMessage());
+            try {
+                location = Paths.get(System.getProperty("java.io.tmpdir"), "phantomtrace", "uploads").toAbsolutePath().normalize();
+                Files.createDirectories(location);
+                log.info("Successfully initialized fallback local storage folder at: {}", location);
+            } catch (Exception ex) {
+                log.error("Failed to initialize fallback local storage folder at {}: {}", location, ex.getMessage());
+                throw new ApiException("Could not initialize local storage folder: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
+        this.rootLocation = location;
     }
 
     @Override
