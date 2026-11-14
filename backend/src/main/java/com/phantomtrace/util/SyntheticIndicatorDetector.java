@@ -6,18 +6,26 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Utility for detecting synthetic demonstration indicators and RFC-reserved testing namespaces.
+ * Utility for detecting synthetic demonstration indicators and RFC-reserved
+ * testing namespaces.
  * <p>
  * Distinguishes between:
  * <ol>
- *   <li><b>Explicit Synthetic Demo Fixtures:</b> RFC 5737 TEST-NET IPs (192.0.2.0/24, 198.51.100.0/24,
- *       203.0.113.0/24), RFC 2606 special-use testing TLDs (.test, .example, .invalid, .localhost), and
- *       internal demonstration namespaces (*.internal-demo.test). For these fixtures, external threat-intelligence
- *       queries are bypassed (returning UNKNOWN with SYNTHETIC_TEST_INDICATOR) and demo campaign isolation applies.</li>
- *   <li><b>Reserved Documentation Example Domains:</b> RFC 2606 Section 3 reserved second-level domains
- *       (example.com, example.net, example.org). In genuine investigations, these domains do NOT suppress
- *       threat-intelligence queries and do NOT trigger synthetic demo campaign isolation.
- *       Note: example.edu is NOT an RFC 2606 reserved domain.</li>
+ * <li><b>Explicit Synthetic Demo Fixtures:</b> RFC 5737 TEST-NET IPs
+ * (192.0.2.0/24, 198.51.100.0/24,
+ * 203.0.113.0/24), RFC 2606 special-use testing TLDs (.test, .example,
+ * .invalid, .localhost), and
+ * internal demonstration namespaces (*.internal-demo.test). For these fixtures,
+ * external threat-intelligence
+ * queries are bypassed (returning UNKNOWN with SYNTHETIC_TEST_INDICATOR) and
+ * demo campaign isolation applies.</li>
+ * <li><b>Reserved Documentation Example Domains:</b> RFC 2606 Section 3
+ * reserved second-level domains
+ * (example.com, example.net, example.org). In genuine investigations, these
+ * domains do NOT suppress
+ * threat-intelligence queries and do NOT trigger synthetic demo campaign
+ * isolation.
+ * Note: example.edu is NOT an RFC 2606 reserved domain.</li>
  * </ol>
  */
 public final class SyntheticIndicatorDetector {
@@ -61,10 +69,12 @@ public final class SyntheticIndicatorDetector {
     }
 
     /**
-     * Checks if the indicator is an RFC 2606 Section 3 reserved documentation domain:
+     * Checks if the indicator is an RFC 2606 Section 3 reserved documentation
+     * domain:
      * example.com, example.net, or example.org (and subdomains).
      * <p>
-     * Note: example.edu is intentionally NOT included because RFC 2606 only reserves .com, .net, and .org.
+     * Note: example.edu is intentionally NOT included because RFC 2606 only
+     * reserves .com, .net, and .org.
      *
      * @param value raw indicator string
      * @return true if an RFC 2606 reserved documentation domain; false otherwise
@@ -88,8 +98,10 @@ public final class SyntheticIndicatorDetector {
 
     /**
      * Identifies synthetic demonstration fixtures.
-     * Delegates to {@link #isExplicitSyntheticDemoFixture(String)} to ensure that genuine
-     * investigations containing documentation domains (example.com, etc.) are NOT treated as synthetic.
+     * Delegates to {@link #isExplicitSyntheticDemoFixture(String)} to ensure that
+     * genuine
+     * investigations containing documentation domains (example.com, etc.) are NOT
+     * treated as synthetic.
      */
     public static boolean isSyntheticIndicator(String value) {
         return isExplicitSyntheticDemoFixture(value);
@@ -98,9 +110,9 @@ public final class SyntheticIndicatorDetector {
     /**
      * Checks if the given host is within any RFC 5737 TEST-NET IPv4 block:
      * <ul>
-     *   <li>TEST-NET-1: 192.0.2.0/24</li>
-     *   <li>TEST-NET-2: 198.51.100.0/24</li>
-     *   <li>TEST-NET-3: 203.0.113.0/24</li>
+     * <li>TEST-NET-1: 192.0.2.0/24</li>
+     * <li>TEST-NET-2: 198.51.100.0/24</li>
+     * <li>TEST-NET-3: 203.0.113.0/24</li>
      * </ul>
      */
     public static boolean isRfc5737TestNetIp(String host) {
@@ -143,7 +155,8 @@ public final class SyntheticIndicatorDetector {
     }
 
     /**
-     * Checks if the host matches RFC 2606 special-use testing TLDs or internal demo domains.
+     * Checks if the host matches RFC 2606 special-use testing TLDs or internal demo
+     * domains.
      * (.test, .example, .invalid, .localhost, *.internal-demo.test)
      */
     public static boolean isExplicitTestTldOrNamespace(String host) {
@@ -158,7 +171,8 @@ public final class SyntheticIndicatorDetector {
     }
 
     /**
-     * Extracts host, hostname, or domain from URLs, emails, authority strings, or raw IP/domain strings.
+     * Extracts host, hostname, or domain from URLs, emails, authority strings, or
+     * raw IP/domain strings.
      */
     public static String extractHostOrDomain(String raw) {
         if (raw == null) {

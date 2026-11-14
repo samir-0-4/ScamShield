@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: phantomtrace-backend
+    runtime: docker
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
+    plan: free
+    region: oregon
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        fromDatabase:
+          name: phantomtrace-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://frontend-eta-brown-50.vercel.app,http://localhost:5173
+      - key: GROQ_API_KEY
+        sync: false
+      - key: VIRUSTOTAL_API_KEY
+        sync: false
+      - key: URLHAUS_API_KEY
+        sync: false
+
+databases:
+  - name: phantomtrace-db
+    databaseName: phantomtrace
+    user: phantomtrace_user
+    plan: free
+    region: oregon
