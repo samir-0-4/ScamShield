@@ -37,3 +37,4 @@ class LocalStorageServiceImplTest {
         assertThat(service.loadAsResource(filename).exists()).isTrue();
     }
 }
+
