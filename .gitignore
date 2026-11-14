@@ -54,6 +54,9 @@ logs/
 # Docker
 .docker/
 
+# Vercel
+.vercel/
+
 # Keep Kiro artifacts intact
 !.kiro/
 !.kiro/**
